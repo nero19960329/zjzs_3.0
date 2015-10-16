@@ -1,6 +1,6 @@
 node_modules/*
+bin/*
 /log
 /*.pid
 /*.sh
-bin/*
 address_configure.js
