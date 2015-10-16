@@ -26,6 +26,7 @@ exports.clearCache=function()
 
 function verifyStudent(openID,ifFail,ifSucc)
 {
+    console.log("openID: " + openID);
     db[USER_DB].find({weixin_id:openID,status:1},function(err,docs)
     {
         if (err || docs.length==0)

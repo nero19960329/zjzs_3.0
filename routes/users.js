@@ -24,6 +24,7 @@ router.get("/", function(req, res)
 {
     db[ADMIN_DB].find({user:req.session.user},function(err,docs)
     {
+        console.log("docs[0]: " + docs[0].user + ", " + docs[0].manager + ", " + docs[0].cashier);
         if (err || docs.length==0)
         {
             req.session.user=null;

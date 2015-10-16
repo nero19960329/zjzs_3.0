@@ -3,7 +3,7 @@ var tickets = "ticket";
 var activities = "activity";
 var students = "student";
 var admins = "manager";
-var seats = "seat"
+var seats = "seat";
 
 
 exports.tickets = tickets;

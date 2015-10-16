@@ -282,6 +282,7 @@ router.get("/detail", function(req, res)
 						status: act.status,
 						id: req.query.actid
 					};
+				console.log("activity: " + activity.name + ", " + activity.need_seat);
 				if (activity.need_seat == 0){
 					res.render("activity_detail", {activity:activity});
 					lock.release(ACTIVITY_DB);

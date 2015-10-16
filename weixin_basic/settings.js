@@ -1,10 +1,13 @@
 var urls=require("../address_configure");
 
-exports.WEIXIN_TOKEN = 'F8ZFW1Cyzr5z6nNoJ5uZhA8iXEbe1hvX';
+//exports.WEIXIN_TOKEN = 'F8ZFW1Cyzr5z6nNoJ5uZhA8iXEbe1hvX';
+exports.WEIXIN_TOKEN = 'niconiconi';
 
-exports.WEIXIN_APPID = 'wxba2385bd8746d139';
+//exports.WEIXIN_APPID = 'wxba2385bd8746d139';
+exports.WEIXIN_APPID = 'wx95b33c61851909e8';
 
-exports.WEIXIN_SECRET = 'e6f9aea61c5511cb2adb0543e1f2f206';
+//exports.WEIXIN_SECRET = 'e6f9aea61c5511cb2adb0543e1f2f206';
+exports.WEIXIN_SECRET = '8f5c1c4a2b98d4340bf4f78690e4fc31';
 
 var WEIXIN_EVENT_KEYS = {
 	'info_news': 'V1001_SCHOOL_NEWS',

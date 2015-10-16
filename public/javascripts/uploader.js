@@ -58,6 +58,11 @@ function successRes(data)
         errorRes();
         return;
     }
-    $("#input-pic_url")[0].value=data.responseText;
+    $("#input-pic_url")[0].value=changeURL(data.responseText);
     hideUploader();
+}
+
+// 修改url的斜杠
+function changeURL(text) {
+    return text.replace(/\\/g, '/');
 }
