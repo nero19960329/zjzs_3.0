@@ -89,19 +89,4 @@ app.use(function(err, req, res, next) {
     });
 });
 
-// var db = require("./models/models").db;
-// db.manager.save({
-//     user: 'admin',
-//     password: 'admin',
-//     manager: true,
-//     cashier: false
-// }, function(err, saved) {
-//     if (err || !saved) {
-//         console.log("manager not saved");
-//     } else {
-//         console.log("manager saved");
-//     }
-// });
-
-
 module.exports = app;

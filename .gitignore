@@ -2,3 +2,5 @@ node_modules/*
 /log
 /*.pid
 /*.sh
+bin/*
+address_configure.js
