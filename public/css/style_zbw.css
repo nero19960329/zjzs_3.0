@@ -24,6 +24,11 @@
     color:#d4d4d4;
 }
 
+
+#activity_content {
+    word-wrap: break-word;
+}
+
 #get_ticket_method_title
 {
     line-height: 27px;

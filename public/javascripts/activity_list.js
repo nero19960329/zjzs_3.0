@@ -130,6 +130,9 @@ var tdMap = {
     },
     'detail': function(act) {
         return true;
+    },
+    'preview': function(act) {
+        return true;
     }
 }, tdActionMap = {
     'status': function(act, key) {

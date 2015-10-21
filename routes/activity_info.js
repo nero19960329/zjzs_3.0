@@ -6,6 +6,7 @@ var lock = require('../models/lock');
 var urls = require("../address_configure");
 
 var ACTIVITY_DB = model.activities;
+var ADMIN_DB = model.admins;
 var db = model.db;
 
 function addZero(num)
@@ -77,10 +78,21 @@ router.get("/", function(req, res, next)
 
             time_rem:           Math.round((theAct.book_start-current)/1000),
             ticket_status:      nowStatus,
-            current_time:       (new Date()).getTime()
+            current_time:       (new Date()).getTime(),
+            isManager:          false
         };
-
-        res.render("activity_detail_user", tmp);
+        //判断是否是管理员
+        db[ADMIN_DB].find({user:req.session.user,manager:true},function(err,docs)
+        {
+            console.log("err: " + err + " docs.length: " + docs.length);
+            if (err || docs.length === 0)
+            {
+                res.render("activity_detail_user", tmp);
+                return;
+            }
+            tmp.isManager = true;
+            res.render("activity_detail_user", tmp);
+        });
     });
 });
 
