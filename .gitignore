@@ -4,3 +4,4 @@ node_modules/*
 /*.sh
 bin/*
 address_configure.js
+public/uploadpics/*
