@@ -195,6 +195,20 @@ exports.faire_get_ticket=function(msg,res)
         res.send(template.getPlainTextTemplate(msg,"请先绑定学号。"));
     },function(stuID)
     {
+        db[USER_DB].find({stu_id:stuID}, function(err,docs){
+            if (err || docs.length == 0)
+            {
+                //查无此人
+            }
+            else
+            {
+                if(docs[0].punish > 0)
+                {
+                    res.send(template.getPlainTextTemplate(msg,"您由于不良购票记录正处于账户冻结期，您的账户将于" + docs[0].punish + "次活动后解禁"));
+                    return;
+                }
+            }
+        })
         if (usr_lock[stuID]!=null)
         {
             res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后通过查票功能查看抢票结果(/▽＼)"));
