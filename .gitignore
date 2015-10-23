@@ -5,3 +5,4 @@ node_modules/*
 bin/*
 address_configure.js
 public/uploadpics/*
+weixin_basic/settings.js
