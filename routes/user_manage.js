@@ -13,7 +13,7 @@ var cache = require("../weixin_handler/handler_ticket");
 var listRoute = require("./user_manage_list");
 var deleteRoute = require("./user_manage_delete");
 var exportRoute = require("./user_manage_export");
-var newactRoute = require("./user_manage_newact");
+var detailRoute = require("./user_manage_detail");
 
 var ADMIN_DB = model.admins;
 var db = model.db;
@@ -34,6 +34,6 @@ router.use("/checkin",checkin);
 router.use("/list", listRoute);
 router.use("/delete", deleteRoute);
 router.use("/export", exportRoute);
-router.use("/detail", newactRoute);
+router.use("/detail", detailRoute);
 
 module.exports = router;
