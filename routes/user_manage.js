@@ -454,7 +454,6 @@ router.post("/detail", function(req, res)
 						lock.release(ACTIVITY_DB);
 						return;
 					}
-					
 					if (activity["need_seat"] == 1) //综体
 					{
 						a = parseInt(activity["A_area"]);
@@ -487,7 +486,6 @@ router.post("/detail", function(req, res)
 						delete activity.D_area;
 						delete activity.E_area;
 					}
-					
 					if (activity["need_seat"] == 2) //新清
 					{
 						var i, j;
@@ -519,7 +517,6 @@ router.post("/detail", function(req, res)
 							}
 							rowNum++;
 						}
-
 						if (totalCount != activity["remain_tickets"])
 						{
 							res.send("404#选座票数和不等于总票数，没有录入数据库！请重新检查。");
@@ -528,7 +525,6 @@ router.post("/detail", function(req, res)
 						}
 						delete activity.seat_map;
 					}
-					
 					var st = activity["start_time"];
 					var be = activity["book_end"];
 					if (!(moment([moment(be).year(), moment(be).month(), moment(be).date()]).isBefore(
@@ -693,7 +689,6 @@ router.post("/detail", function(req, res)
 						delete activity.D_area;
 						delete activity.E_area;
 					}
-
 					if (activity["need_seat"] == 2) //新清
 					{
 						var i, j;
@@ -725,7 +720,6 @@ router.post("/detail", function(req, res)
 							}
 							rowNum++;
 						}
-
 						if (totalCount != activity["remain_tickets"])
 						{
 							res.send("404#选座票数和不等于总票数，没有录入数据库！请重新检查。");
@@ -734,7 +728,6 @@ router.post("/detail", function(req, res)
 						}
 						delete activity.seat_map;
 					}
-
 					var st = activity["start_time"];
 					var be = activity["book_end"];
 					if (!(moment([moment(be).year(), moment(be).month(), moment(be).date()]).isBefore(
