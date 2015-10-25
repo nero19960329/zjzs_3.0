@@ -37,60 +37,66 @@ router.get("/", function(req, res, next)
     //WARNING: 500 when invalid id
     var theActID=model.getIDClass(req.query.actid);
 
-    db[ACTIVITY_DB].find(
+    var conditionObj = {
+        _id: theActID
+    };
+
+    //判断是否是管理员
+    db[ADMIN_DB].find({user:req.session.user,manager:true},function(err,docs)
     {
-        _id:theActID,
-        status:{$gt:0}
-    },function(err, docs)
-    {
-        if (err || docs.length==0)
-        {
-            res.send("Activity not exist!");
+        if (err) {
+            res.render("activity_detail_user", tmp);
             return;
         }
-        var theAct=docs[0];
-        var nowStatus=0;
-        var current=(new Date()).getTime();
-        if (current>theAct.book_start && current<theAct.book_end)
-            nowStatus=1;
-        else if (current>=theAct.book_end)
-            nowStatus=2;
-        var tmp=
-        {
-            act_name:           theAct.name,
-            act_book_start:     theAct.book_start,
-            act_book_end:       theAct.book_end,
-            act_start:          theAct.start_time,
-            act_end:            theAct.end_time,
-            act_place:          theAct.place,
-            act_key:            theAct.key,
-            act_pic_url:        theAct.pic_url,
-            act_desc:           theAct.description
-                                    .replace(/ /g,"&nbsp;")
-                                    .replace(/"/g,"&quot;")
-                                    .replace(/</g,"&lt;")
-                                    .replace(/>/g,"&gt;")
-                                    .replace(/\\n/g,"<br>"),
-            seat_type:          theAct.need_seat,
 
-            cur_time:           getTime(new Date(),true),
-            rem_tik:            theAct.remain_tickets,
+        var isManager = false;
+        if (docs.length === 0) {
+            conditionObj.status = {$gt: 0};
+        } else {
+            isManager = true;
+        }
 
-            time_rem:           Math.round((theAct.book_start-current)/1000),
-            ticket_status:      nowStatus,
-            current_time:       (new Date()).getTime(),
-            isManager:          false
-        };
-        //判断是否是管理员
-        db[ADMIN_DB].find({user:req.session.user,manager:true},function(err,docs)
+        db[ACTIVITY_DB].find(conditionObj, function(err, docs)
         {
-            console.log("err: " + err + " docs.length: " + docs.length);
-            if (err || docs.length === 0)
+            if (err || docs.length==0)
             {
-                res.render("activity_detail_user", tmp);
+                res.send("Activity not exist!");
                 return;
             }
-            tmp.isManager = true;
+            var theAct=docs[0];
+            var nowStatus=0;
+            var current=(new Date()).getTime();
+            if (current>theAct.book_start && current<theAct.book_end)
+                nowStatus=1;
+            else if (current>=theAct.book_end)
+                nowStatus=2;
+            var tmp=
+            {
+                act_name:           theAct.name,
+                act_book_start:     theAct.book_start,
+                act_book_end:       theAct.book_end,
+                act_start:          theAct.start_time,
+                act_end:            theAct.end_time,
+                act_place:          theAct.place,
+                act_key:            theAct.key,
+                act_pic_url:        theAct.pic_url,
+                act_desc:           theAct.description
+                                        .replace(/ /g,"&nbsp;")
+                                        .replace(/"/g,"&quot;")
+                                        .replace(/</g,"&lt;")
+                                        .replace(/>/g,"&gt;")
+                                        .replace(/\\n/g,"<br>"),
+                seat_type:          theAct.need_seat,
+
+                cur_time:           getTime(new Date(),true),
+                rem_tik:            theAct.remain_tickets,
+
+                time_rem:           Math.round((theAct.book_start-current)/1000),
+                ticket_status:      nowStatus,
+                current_time:       (new Date()).getTime(),
+                isManager:          isManager
+            };
+
             res.render("activity_detail_user", tmp);
         });
     });

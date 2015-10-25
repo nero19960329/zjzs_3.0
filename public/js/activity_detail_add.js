@@ -90,7 +90,6 @@ function add_to_html()
 
     if (isManager === "true")
     {
-        console.log("document height: " + $(document).height());
         $("body").css({
             "font-size": "0.4em",
             "width": "360px"
