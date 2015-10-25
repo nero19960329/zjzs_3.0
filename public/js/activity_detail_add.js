@@ -68,13 +68,14 @@ function add_to_html()
         {
             time_left-=100;
             var y = $(window).scrollTop();
-            if (y > 80 && get_ticket_show)
+            console.log("y: " + y + " get_ticket_show: " + get_ticket_show);
+            if (y > 70 && get_ticket_show)
             {
                 hide_div(".auto_hide");
                 get_ticket_show=false;
                 //show_div("#get_ticket_2");
             }
-            if (y <= 80 && !get_ticket_show)
+            if (y <= 70 && !get_ticket_show)
             {
                 show_div(".auto_hide");
                 get_ticket_show=true;
@@ -85,6 +86,24 @@ function add_to_html()
                     ((activity_ticket_status?'距抢票结束还有:<br>':'抢票倒计时:<br>')+'　　'+(show_time(time_left)));
         },100);
     }
+
+
+    if (isManager === "true")
+    {
+        $("body").css({
+            "font-size": "0.4em",
+            "width": "360px"
+        });
+        $("activity_content").css({
+            "width": "330px",
+        });
+        $(".auto_hide").css("width", "360px");
+    }
+
+    // 使活动介绍部分充满屏幕，针对
+    //if ($("#robot").height() <= 540) {
+        $("#robot").css("height", $(document).height() + "px");
+    //}
 }
 
 add_to_html();
