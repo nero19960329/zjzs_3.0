@@ -115,7 +115,7 @@ var tdMap = {
     'delete': 'deletelink'
 }, operationMap = {
     'checkin': function(act) {
-        var now = new Date()
+        var now = new Date();
         if (act.status != 1 || (now <= act.book_start) || (now >= act.end_time)) {
             return false;
         } else {
@@ -129,6 +129,9 @@ var tdMap = {
         	return true;
     },
     'detail': function(act) {
+        return true;
+    },
+    'preview': function(act) {
         return true;
     }
 }, tdActionMap = {
