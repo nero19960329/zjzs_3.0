@@ -34,7 +34,7 @@ function verifyStudent(openID,ifFail,ifSucc)
             ifFail();
             return;
         }
-        ifSucc(docs[0].stu_id);
+        ifSucc(docs[0].stu_id, docs[0].punish);
     });
 }
 exports.verifyStu=verifyStudent;
@@ -244,8 +244,13 @@ exports.faire_get_ticket=function(msg,res)
     {
         //WARNING: may change to direct user to bind
         res.send(needValidateMsg(msg));
-    },function(stuID)
+    },function(stuID, stuPunish)
     {
+        if (parseInt(stuPunish) > 0){
+            res.send(template.getPlainTextTemplate(msg,"您由于不良购票记录正处于账户冻结期，您的账户将于" + stuPunish + "次活动后解禁"));
+            return;
+        }
+
         if (usr_lock[stuID]!=null)
         {
             res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后通过查票功能查看抢票结果(/▽＼)"));

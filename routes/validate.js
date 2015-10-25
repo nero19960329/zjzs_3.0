@@ -59,7 +59,7 @@ router.post('/', function(req, res) {
                         if (docs.length == 0){
                             db[students].find({stu_id:stu.data.ID}, function(err, docs) {
                                 if (docs.length == 0){
-                                    db[students].insert({stu_id: stu.data.ID, weixin_id: openid, status: 1}, function(){
+                                    db[students].insert({stu_id: stu.data.ID, weixin_id: openid, status: 1, credits:0, punish:0}, function(){
                                         lock.release(students);
                                         res.send('Accepted');
                                         return;
