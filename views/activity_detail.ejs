@@ -302,49 +302,19 @@
             <div class="form-group" id="div-area_arrange" style="display: none;">
                 <label for="input-area_arrange" class="col-sm-2 control-label">分配情况</label>
                 <div class="form-inline col-sm-10" id="input-area_arrange">
-                    <div class="form-group area-label">
-                        <label class="control-label" for="input-A_area">A区</label>
-                    </div>
-                    <div class="form-group area-input">
-                        <input class="form-control" type="number" id="input-A_area" value=""
-                               placeholder="A区票数" min="0" step="1" area-part="a">
-                    </div>
-                    <div class="form-group area-offset">
-                    </div>
-                    <div class="form-group area-label">
-                        <label class="control-label" for="input-B_area">B区</label>
-                    </div>
-                    <div class="form-group area-input">
-                        <input class="form-control" type="number" id="input-B_area" value=""
-                               placeholder="B区票数" min="0" step="1" area-part="b">
-                    </div>
-                    <div class="form-group area-offset">
-                    </div>
-                    <div class="form-group area-label">
-                        <label class="control-label" for="input-C_area">C区</label>
-                    </div>
-                    <div class="form-group area-input">
-                        <input class="form-control" type="number" id="input-C_area" value=""
-                               placeholder="C区票数" min="0" step="1" area-part="c">
-                    </div>
-                    <div class="form-group area-offset">
-                    </div>
-                    <div class="form-group area-label">
-                        <label class="control-label" for="input-D_area">D区</label>
-                    </div>
-                    <div class="form-group area-input">
-                        <input class="form-control" type="number" id="input-D_area" value=""
-                               placeholder="D区票数" min="0" step="1" area-part="d">
-                    </div>
-                    <div class="form-group area-offset">
-                    </div>
-                    <div class="form-group area-label">
-                        <label class="control-label" for="input-E_area">E区</label>
-                    </div>
-                    <div class="form-group area-input">
-                        <input class="form-control" type="number" id="input-E_area" value=""
-                               placeholder="E区票数"min="0"  step="1" area-part="e">
-                    </div>
+                    <% for (var i of ['A', 'B', 'C', 'D', 'E']) {%>
+                        <div class="form-group area-label">
+                            <label class="control-label" for="input-<%= i %>_area"><%= i %>区</label>
+                        </div>
+                        <div class="form-group area-input">
+                            <input class="form-control" type="number" id="input-<%= i %>_area" value=""
+                                placeholder="<%= i %>区票数" min="0" step="1" area-part="<%= i.toLowerCase() %>">
+                            <input class="form-control" type="number" id="input-<%= i %>_price_area" value=""
+                                placeholder="<%= i %>区票价" min="0" step="1">
+                        </div>
+                        <div class="form-group area-offset">
+                        </div>
+                    <% } %>
                 </div>
             </div>
 
