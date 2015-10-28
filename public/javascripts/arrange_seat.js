@@ -10,20 +10,25 @@ var default_seat_map = [[0, 0, 0, 1, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
                         [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]];
 
 function InitSeatRender() {
-
     var i = 0, j = 0;
 
     var table = document.getElementById("tb_Seat");
     if (table != null) {
         for (i = 0; i < table.rows.length; i ++) {
             for (j = 0; j < table.rows[i].cells.length; j ++) {
-                table.rows[i].cells[j].onclick = function () {
-                    HandleClick(this);
+                table.rows[i].cells[j].onmouseover = function (e) {
+                    if (e.which === 1)
+                        HandleClick(this);
                 };
+
+                table.rows[i].cells[j].onmousedown = function(e) {
+                    HandleClick(this);
+                }
             }
         }
     }
 }
+
 InitSeatRender();
 
 function GetNeighbourChar(str, offset) {
@@ -49,7 +54,7 @@ function HandleClick(table_cell) {
 }
 
 function RenderMap() {
-    
+
 
     if (activity.seat_map) {
         var i = 0;
@@ -71,7 +76,7 @@ function RenderMap() {
             }
         }
     }
-	
+
 }
 
 $(document).ready(function() {
@@ -86,7 +91,7 @@ $(document).ready(function() {
 
     //RenderMap();
 
-    
+
     tb_Seat = $("#input-seat_arrange").width();
     seat = $("[class^=seat]");
     seat.width(tb_Seat/41);

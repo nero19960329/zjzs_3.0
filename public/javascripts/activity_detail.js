@@ -195,7 +195,7 @@ function initializeForm(activity) {
             seat.height(seat.width());
             seat_w = seat.width();
             seat_h = seat.height();
-            
+
             $('td').height(seat_h);
         }
         else {
@@ -511,51 +511,39 @@ function wrapAreaArrange(dom, formData) {
     var tmp = {};
     for (i = 0, len = parts.length; i < len; i++) {
         part = $(parts[i]).children();
+
         if (part.attr('area-part')) {
-            if (part.val().length == 0) {
+            var price = part.next();
+            console.log(price.val());
+            if (part.val().length == 0 || price.val().length == 0) {
                 return false;
             }
             else {
-                tmp[part.attr('area-part')] = parseInt(part.val());
+                tmp[part.attr('area-part')] = {}
+                tmp[part.attr('area-part')].number = parseInt(part.val());
+                tmp[part.attr('area-part')].price = price.val();
             }
         }
     }
-    formData.push({
-        name: 'A_area',
-        required: false,
-        type: 'number',
-        value: tmp.a
-    });
-    formData.push({
-        name: 'B_area',
-        required: false,
-        type: 'number',
-        value: tmp.b
-    });
-    formData.push({
-        name: 'C_area',
-        required: false,
-        type: 'number',
-        value: tmp.c
-    });
-    formData.push({
-        name: 'D_area',
-        required: false,
-        type: 'number',
-        value: tmp.d
-    });
-    formData.push({
-        name: 'E_area',
-        required: false,
-        type: 'number',
-        value: tmp.e
-    });
-    //formData['total_tickets'] = tmp.a + tmp.b + tmp.c + tmp.d + tmp.e;
+
+    for (var i of ['A', 'B', 'C', 'D', 'E']) {
+        formData.push({
+            name: i + '_area',
+            required: false,
+            type: 'number',
+            value: tmp[i.toLowerCase()].number
+        });
+    }
+
     for (i = 0; i < formData.length; i++) {
         if (formData[i].name == 'total_tickets') {
-            formData[i].value = tmp.a + tmp.b + tmp.c + tmp.d + tmp.e;
+            formData[i].value = 0;
+            for (var j of ['a', 'b', 'c', 'd', 'e']) {
+                formData[i].value += tmp[j].number;
+            }
         }
     }
+
     return true;
 }
 
@@ -632,7 +620,7 @@ function beforeSubmit(formData, jqForm, options) {
                 console.log(formData[x].name);
             }
         }
-        
+
     }
     if (lackArray.length > 0) {
         var d = $('#resultHolder');
@@ -804,7 +792,7 @@ function inputNeedSeatChange(){
         seat.height(seat.width());
         seat_w = seat.width();
         seat_h = seat.height();
-        
+
         $('td').height(seat_h);
     }
     else {
