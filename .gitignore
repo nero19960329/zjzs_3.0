@@ -6,3 +6,8 @@ bin/*
 address_configure.js
 public/uploadpics/*
 weixin_basic/settings.js
+journal
+*.0
+*.ns
+*.lock
+*.bson
