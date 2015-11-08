@@ -1,7 +1,8 @@
 var model = require('../models/models');
 
-var handleRequest = require("../routes/handleRequest.js");
+var handleRequest = require("../routes/handleRequest");
 
+var REQUEST_DB = model.requests;
 var ACTIVITY_DB = model.activities;
 var db = model.db;
 
@@ -16,10 +17,11 @@ db[ACTIVITY_DB].find({book_start: {$lte: currentTime}, book_end: {$gte: currentT
 	}
 	
 	var length = docs.length;
+	
 	for (var i = 0; i < length; ++i) {
 		handleRequest.handleSingleActivity(docs[i].key);
 	}
 	
-	process.exit(0)
+	//process.exit(0)
 });
 

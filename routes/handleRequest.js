@@ -2,7 +2,7 @@ var at = require('../weixin_basic/access_token');
 var moduleMsg = require('../weixin_basic/module_message');
 var model = require('../models/models');
 
-var REQUEST_DB = model.request;
+var REQUEST_DB = model.requests;
 var TICKET_DB = model.tickets;
 var USER_DB = model.students;
 var ACTIVITY_DB = model.activities;
@@ -61,8 +61,21 @@ function generateUniqueCode(prefix,actKey)
 }
 
 exports.handleSingleActivity = function (name){
-
+	/*var res = 0;
+	console.log(name);
+	console.log("123123");
+	db[REQUEST_DB].find({"test": "test"}, function(err, docs) {
+		console.log("err: " + err);
+		console.log("length: " + docs.length);
+		var tmp = 0;
+		while (tmp < 1) {
+			tmp++;		
+		}
+		res = 1;
+	});
+	return res;*/
 	db[REQUEST_DB].find({act_name:name}, {sort:{time:1}}, function(err, docs){
+		console.log("length: " + docs.length);
 		if (err || docs.length==0) {
 			//nobody want this activity
             return -1;

@@ -108,7 +108,7 @@ exports.faire_bookable_activity=function(msg,res)
             tmpEle[template.rich_attr.picture]=docs[i].pic_url;
             showList.push(tmpEle);
         }
-        handleRequest.handleSingleActivity("rp不洗澡4");
+        //handleRequest.handleSingleActivity("rp不洗澡4");
         res.send(template.getRichTextTemplate(msg,showList));
     });
 }
