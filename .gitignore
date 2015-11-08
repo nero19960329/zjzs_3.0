@@ -7,3 +7,8 @@ address_configure.js
 public/uploadpics/*
 weixin_basic/settings.js
 npm-debug.log
+journal
+*.0
+*.ns
+*.lock
+*.bson
