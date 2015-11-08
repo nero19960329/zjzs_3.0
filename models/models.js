@@ -11,7 +11,7 @@ exports.activities = activities;
 exports.students = students;
 exports.admins = admins;
 exports.seats = seats;
-exports.request = requests;
+exports.requests = requests;
 
 exports.db = mongojs('mongodb://localhost/ticket', [tickets, activities, students, admins, seats, requests]);
 

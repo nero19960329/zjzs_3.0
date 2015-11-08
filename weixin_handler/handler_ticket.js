@@ -10,6 +10,7 @@ var TICKET_DB = model.tickets;
 var USER_DB = model.students;
 var ACTIVITY_DB = model.activities;
 var SEAT_DB = model.seats;
+var REQUEST_DB = model.requests;
 var db = model.db;
 
 var alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
@@ -218,6 +219,42 @@ exports.check_get_ticket=function(msg)
             return true;
     return false;
 }
+
+exports.save_ticket_request = function(msg, res) {
+    var weixin_id, act_name, current_time;
+
+    if (msg.MsgType[0]==="text") {
+        if (msg.Content[0]==="抢票") {
+            res.send(template.getPlainTextTemplate(msg,"请使用“抢票 活动代称”的命令或菜单按钮完成指定活动的抢票。"));
+            return;
+        } else {
+            act_name=msg.Content[0].substr(3);
+        }
+    } else {
+        act_name=msg.EventKey[0].substr(basicInfo.WEIXIN_BOOK_HEADER.length);
+    }
+    
+    verifyActivities(act_name, function(tl) {
+    	if (tl == null){
+    		res.send(template.getPlainTextTemplate(msg, "目前没有符合要求的活动处于抢票期。"));
+    	} else {
+    		res.send(template.getPlainTextTemplate(msg, "该活动将在 " + getTimeFormat(tl) + " 后开始抢票，请耐心等待！"));
+    	}
+    }, function(actID, staticACT) { // 可以对verifyActivities进行代码优化
+		weixin_id = msg.FromUserName[0];
+		current_time = (new Date()).getTime();
+
+		db[REQUEST_DB].insert({
+		    weixin_id : weixin_id,
+		    act_name : act_name,
+		    time : current_time,
+		    type: 0		// 0代表抢票，1代表退票成功
+		}, function(err, result) {
+		    res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后查看抢票结果(/▽＼)"));
+		});
+    });
+}
+
 exports.faire_get_ticket=function(msg,res)
 {
     var actName,openID;
@@ -397,7 +434,17 @@ exports.faire_reinburse_ticket=function(msg,res)
                     {
                         rem_cache[actName]++;
                         tik_cache[actName].usrMap[stuID]=null;
-                        res.send(template.getPlainTextTemplate(msg,"退票成功。"));
+                        
+                        var current_time = (new Date()).getTime();
+                        db[REQUEST_DB].insert({
+							weixin_id : stuID,
+							act_name : actName,
+							time : current_time,
+							type: 1		// 0代表抢票，1代表退票成功
+						}, function(err, result) {
+							res.send(template.getPlainTextTemplate(msg,"退票成功"));
+						});
+						
                         return;
                     });
                 });
