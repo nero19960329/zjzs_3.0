@@ -23,7 +23,7 @@ var successData = {
     "topcolor":"#FF0000",
     "data":{
         "first":{
-            "value":"恭喜您成功抢到了票！",
+            "value":"恭喜您抢票成功了！",
             "color":"#173177"
         },
         "keyword1":{
@@ -56,7 +56,7 @@ var failData = {
     "topcolor":"#FF0000",
     "data":{
         "first":{
-            "value":"很遗憾您没有抢到票！",
+            "value":"很遗憾，您抢票失败了！",
             "color":"#173177"
         },
         "keyword1":{
@@ -116,10 +116,13 @@ exports.sendFailMessage = function (access_token, openid, reason) {
         failData.data.keyword2.value = "由于以前的不良抢票记录，账号被冻结。";
     }
     if(reason < 0){
-        failData.data.remark.value = "您的账号将于" + (-reason) + "次后被解禁。" + failData.data.remark.value;
+        failData.data.remark.value = "您的账号将于" + (-reason) + "次活动后被解禁。" + failData.data.remark.value;
     }else if(reason == 1){
         failData.data.remark.value = "请先点击详情进入绑定页面进行绑定，再进行抢票操作。" + failData.data.remark.value;
         failData.url = urls.validateAddress+"?openid="+openid;
+    }
+    else{
+        failData.data.remark.value = "\n欢迎您继续关注后续抢票活动！";
     }
 
     var tfailData = JSON.stringify(failData);
