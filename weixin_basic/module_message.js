@@ -96,7 +96,7 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid) {
 		method: 'POST'
     };
 
-    console.log(opt);
+    /*console.log(opt);
 
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
@@ -105,7 +105,7 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid) {
         })
     });
     req.write(tsuccessData);
-    req.end();
+    req.end();*/
 }
 
 exports.sendFailMessage = function (access_token, openid, reason) {
@@ -133,7 +133,7 @@ exports.sendFailMessage = function (access_token, openid, reason) {
         method: 'POST'
     };
 
-    console.log(opt);
+    /*console.log(opt);
 
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
@@ -144,7 +144,7 @@ exports.sendFailMessage = function (access_token, openid, reason) {
         console.error(e);
     });
     req.write(tfailData);
-    req.end();
+    req.end();*/
 }
 
 

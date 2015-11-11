@@ -15,9 +15,13 @@ var alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
 var act_cache={};
 var rem_cache={};
 var tik_cache={};
+var req_cache=new Array();
 var usr_lock={};
 
 var run_times = 0;
+
+var time_1 = (new Date()).getTime();
+var time_2;
 
 handleSingleActivity();
 
@@ -64,51 +68,71 @@ function generateUniqueCode(prefix,actKey)
     }
 }
 
+function getMinimum(array) {
+    var length = array.length;
+    var min_time = array[0];
+
+    for (var i = 1; i < length; ++i) {
+        if (min_time > array[i]) {
+            min_time = array[i];
+        }
+    }
+
+    return min_time;
+}
+
 function handleSingleActivity() {
 	run_times++;
-	db[REQUEST_DB].find({}, {sort:{time:1}}, function(err, docs){
-		if (docs.length) console.log("length: " + docs.length);
-		if (err || docs.length==0) {
-			//nobody want this activity
-            tik_cache = {};
-            //300000 in use;1000 in test
-            setTimeout(handleSingleActivity, 1000);
-            return -1;
-        }
-        db[REQUEST_DB].remove({_id:docs[0]._id}, function(err2, docs2){
 
+    if (req_cache.length === 0) {
+        db[REQUEST_DB].find({}, {sort:{time:-1}}, function(err, docs) {
+            if (err || docs.length == 0) {
+                //nobody want this activity
+                tik_cache = {};
+                //300000 in use;1000 in test
+                time_2 = (new Date()).getTime();
+                console.log("time: " + (time_2 - time_1));
+                setTimeout(handleSingleActivity, 1000);
+                return -1;
+            }
+            req_cache = docs;
+            handleSingleActivity();
         });
+    } else {
+        var req = req_cache[req_cache.length-1];
+        --req_cache.length;
+        db[REQUEST_DB].remove({_id:req._id});
         
         var remain_tickets = 0;
         var activityName = "";
-		var activityTime = "";
-		var activityPos = "";
+        var activityTime = "";
+        var activityPos = "";
         var activity_id = 0;
-        var name = docs[0].act_name;
+        var name = req.act_name;
         db[ACTIVITY_DB].find({key:name}, function(err2, docs2){
-			if (err2 || docs2.length==0) {
-				//no activity
-	            return -1;
-	        }
+            if (err2 || docs2.length==0) {
+                //no activity
+                return -1;
+            }
             if (tik_cache[name] == null){
                 tik_cache[name] = {};
                 tik_cache[name].tikMap = {};
             }
-	        remain_tickets = docs2[0].remain_tickets;
-	        activityName = docs2[0].name;
-	        activityTime = getTime(docs2[0].start_time)+" ~ "+getTime(docs2[0].end_time);
-	        activityPos = docs2[0].place;
+            remain_tickets = docs2[0].remain_tickets;
+            activityName = docs2[0].name;
+            activityTime = getTime(docs2[0].start_time)+" ~ "+getTime(docs2[0].end_time);
+            activityPos = docs2[0].place;
             activity_id = docs2[0]._id;
-	        moduleMsg.setActivityInfo(activityName, activityTime, activityPos);
-            var len = docs.length;
-            console.log("len: "+len);
-            var openid = docs[0].weixin_id;
+            moduleMsg.setActivityInfo(activityName, activityTime, activityPos);
+            //var len = docs.length;
+            //console.log("len: "+len);
+            var openid = req.weixin_id;
             distributeTicket(openid, docs2[0], remain_tickets, function() {
-                setTimeout(handleSingleActivity, 4);
+                //setTimeout(handleSingleActivity, 4);
+                handleSingleActivity();
             });
-
-		});
-	});
+        });
+    }
 }
 
 //return errnum 0:avaliable 1: 2: 3: ...
@@ -157,6 +181,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
 		                if(staticACT.need_seat == 2){
 		                    price = parseInt(staticACT.price);
 		                }
+                        console.log("stu_id: " + stuID);
 		                db[TICKET_DB].insert(
 		                {
 		                    stu_id:     stuID,
