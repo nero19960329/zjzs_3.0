@@ -17,6 +17,7 @@ var chooseat = require('./routes/choose_seat');
 var chooarea = require('./routes/choose_area');
 var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
+//require('./weixin_handler/request_handler');
 
 var app = express();
 
