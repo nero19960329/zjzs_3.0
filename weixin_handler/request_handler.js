@@ -119,6 +119,12 @@ function handleSingleActivity() {
                 tik_cache[name].tikMap = {};
             }
             remain_tickets = docs2[0].remain_tickets;
+            if (req.type == 1){//退票成功
+                remain_tickets += 1;
+                db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
+                handleSingleActivity();
+                return;
+            }
             activityName = docs2[0].name;
             activityTime = getTime(docs2[0].start_time)+" ~ "+getTime(docs2[0].end_time);
             activityPos = docs2[0].place;
