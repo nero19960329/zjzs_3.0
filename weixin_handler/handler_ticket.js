@@ -16,8 +16,6 @@ var db = model.db;
 var alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
 
 var act_cache={};
-var rem_cache={};
-var tik_cache={};
 var usr_lock={};
 
 exports.clearCache=function()
@@ -57,7 +55,6 @@ function verifyActivities(actKey,ifFail,ifSucc)
             return;
         }
         act_cache[actKey]=null;
-        tik_cache[actKey]=null;
         ifFail();
         return;
     }
@@ -82,22 +79,6 @@ function verifyActivities(actKey,ifFail,ifSucc)
         else
         {
             ifFail(docs[0].book_start-current);
-            if (tik_cache[actKey]==null)
-            {
-                lock.acquire("rem_tik_fetcher",function()
-                {
-                    if (tik_cache[actKey]!=null)
-                    {
-                        lock.release("rem_tik_fetcher");
-                        return;
-                    }
-                    tik_cache[actKey]={};
-                    tik_cache[actKey].tikMap={};
-                    tik_cache[actKey].usrMap={};
-                    lock.release("rem_tik_fetcher");
-                    return;
-                });
-            }
             return;
         }
     });
@@ -110,19 +91,6 @@ function getRandomString()
         ret+=alphabet[Math.floor(Math.random()*alphabet.length)];
     return ret;
 }
-//Attentez: this function can only be called on condition that the collection is locked.
-function generateUniqueCode(callback,prefix,actKey)
-{
-    while (true)
-    {
-        var tickCode=prefix+"_"+getRandomString();
-        if (tik_cache[actKey].tikMap[tickCode]==null)
-        {
-            callback(tickCode);
-            return;
-        }
-    }
-}
 function presentTicket(msg,res,tick,act)
 {
     var tmp="恭喜，抢票成功！\n";
@@ -130,66 +98,6 @@ function presentTicket(msg,res,tick,act)
     if (act.need_seat!=0)
         tmp+="\n注意:该活动需在抢票结束前选座(区)，请进入电子票选择。";
     res.send(template.getPlainTextTemplate(msg,tmp));
-}
-function fetchRemainTicket(key,callback)
-{
-    if (rem_cache[key]!=null)
-    {
-        callback();
-        return;
-    }
-    lock.acquire("rem_tik_fetcher",function()
-    {
-        if (rem_cache[key]!=null)
-        {
-            lock.release("rem_tik_fetcher");
-            callback();
-            return;
-        }
-        db[ACTIVITY_DB].find(
-        {
-            key:key,
-            status:1
-        },function(err,docs)
-        {
-            if (err || docs.length==0)
-            {
-                lock.release("rem_tik_fetcher");
-                return;
-            }
-            if (tik_cache[key]==null)
-            {
-                tik_cache[key]={};
-                tik_cache[key].tikMap={};
-                tik_cache[key].usrMap={};
-                db[TICKET_DB].find({activity:docs[0]._id},function(err2,docs2)
-                {
-                    if (err2)
-                    {
-                        lock.release("rem_tik_fetcher");
-                        return;
-                    }
-                    for (var i=0;i<docs2.length;i++)
-                    {
-                        tik_cache[key].tikMap[docs2[i].unique_id]=true;
-                        if (docs2[i].status!=0)
-                            tik_cache[key].usrMap[docs2[i].stu_id]=true;
-                    }
-                    rem_cache[key]=docs[0].remain_tickets;
-                    lock.release("rem_tik_fetcher");
-                    callback();
-                    return;
-                });
-            }
-            else
-            {
-                rem_cache[key]=docs[0].remain_tickets;
-                lock.release("rem_tik_fetcher");
-                callback();
-                return;
-            }
-        });
-    });
 }
 
 function getTimeFormat(timeInMS)
@@ -254,118 +162,6 @@ exports.save_ticket_request = function(msg, res) {
 		});
     });
 }
-
-exports.faire_get_ticket=function(msg,res)
-{
-    var actName,openID;
-
-    if (msg.MsgType[0]==="text")
-    {
-        if (msg.Content[0]==="抢票")
-        {
-            res.send(template.getPlainTextTemplate(msg,"请使用“抢票 活动代称”的命令或菜单按钮完成指定活动的抢票。"));
-            return;
-        }
-        else
-        {
-            actName=msg.Content[0].substr(3);
-        }
-    }
-    else
-    {
-        actName=msg.EventKey[0].substr(basicInfo.WEIXIN_BOOK_HEADER.length);
-    }
-
-    openID=msg.FromUserName[0];
-    verifyStudent(openID,function()
-    {
-        //WARNING: may change to direct user to bind
-        res.send(needValidateMsg(msg));
-    },function(stuID, stuPunish)
-    {
-        if (parseInt(stuPunish) > 0){
-            res.send(template.getPlainTextTemplate(msg,"您由于不良购票记录正处于账户冻结期，您的账户将于" + stuPunish + "次活动后解禁"));
-            return;
-        }
-
-        if (usr_lock[stuID]!=null)
-        {
-            res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后通过查票功能查看抢票结果(/▽＼)"));
-            return;
-        }
-
-        verifyActivities(actName,function(tl)
-        {
-            if (tl==null)
-                res.send(template.getPlainTextTemplate(msg,"目前没有符合要求的活动处于抢票期。"));
-            else
-                res.send(template.getPlainTextTemplate(msg,"该活动将在 "+getTimeFormat(tl)+" 后开始抢票，请耐心等待！"));
-        },function(actID,staticACT)
-        {
-            fetchRemainTicket(actName,function()
-            {
-                //Attentez: unlike stuID which is THUid, act id is simply act._id
-                if (tik_cache[actName].usrMap[stuID]!=null)
-                {
-                    res.send(template.getPlainTextTemplate(msg,"你已经有票啦，请用查票功能查看抢到的票吧！"));
-                    return;
-                }
-                else
-                {
-                    if (usr_lock[stuID]!=null)
-                    {
-                        res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后通过查票功能查看抢票结果(/▽＼)"));
-                        return;
-                    }
-                    usr_lock[stuID]="true";
-
-                    if (rem_cache[actName]==0)
-                    {
-                        usr_lock[stuID]=null;
-                        res.send(template.getPlainTextTemplate(msg,"对不起，票已抢完...\n(╯‵□′)╯︵┻━┻。"));
-                        return;
-                    }
-                    rem_cache[actName]--;
-                    db[ACTIVITY_DB].update(
-                    {
-                        _id:actID
-                    },
-                    {
-                        $inc: {remain_tickets:-1}
-                    },{multi:false},function(err,result)
-                    {
-                        if (err || result.n==0)
-                        {
-                            usr_lock[stuID]=null;
-                            res.send(template.getPlainTextTemplate(msg,"(╯‵□′)╯︵┻━┻"));
-                            return;
-                        }
-                        var ss=actID.toString();
-                        generateUniqueCode(function(tiCode)
-                        {
-                            tik_cache[actName].tikMap[tiCode]=true;
-                            tik_cache[actName].usrMap[stuID]=true;
-                            db[TICKET_DB].insert(
-                            {
-                                stu_id:     stuID,
-                                unique_id:  tiCode,
-                                activity:   actID,
-                                status:     1,
-                                seat:       "",
-                                cost:       (staticACT.need_seat==2?parseInt(staticACT.price):0)
-                            }, function()
-                            {
-                                usr_lock[stuID]=null;
-                                presentTicket(msg,res,{unique_id:tiCode},staticACT);
-                                return;
-                            });
-                        },ss.substr(0,8)+ss.substr(14),actName);
-                    });
-                }
-            });
-        });
-    });
-}
 //========================================
 exports.check_reinburse_ticket=function(msg)
 {
@@ -424,30 +220,16 @@ exports.faire_reinburse_ticket=function(msg,res)
                         //Nothing? Oui, ne rien.
                     });
                 }
-
-                fetchRemainTicket(actName,function()
-                {
-                    db[ACTIVITY_DB].update({_id:actID},
-                    {
-                        $inc: {remain_tickets:1}
-                    },{multi:false},function()
-                    {
-                        rem_cache[actName]++;
-                        tik_cache[actName].usrMap[stuID]=null;
-                        
-                        var current_time = (new Date()).getTime();
-                        db[REQUEST_DB].insert({
-							weixin_id : stuID,
-							act_name : actName,
-							time : current_time,
-							type: 1		// 0代表抢票，1代表退票成功
-						}, function(err, result) {
-							res.send(template.getPlainTextTemplate(msg,"退票成功"));
-						});
-						
-                        return;
-                    });
-                });
+                    
+            	var current_time = (new Date()).getTime();
+           		db[REQUEST_DB].insert({
+				weixin_id : stuID,
+					act_name : actName,
+					time : current_time,
+					type: 1		// 0代表抢票，1代表退票成功
+				}, function(err, result) {
+					res.send(template.getPlainTextTemplate(msg,"退票成功"));
+				});
             });
         });
     });
