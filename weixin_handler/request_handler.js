@@ -169,7 +169,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
             }
             callback();
         }else{
-            db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id}, function(err4, docs4){
+            db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id, status:1}, function(err4, docs4){
                 if (err4){
                     at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3);
                     callback();
