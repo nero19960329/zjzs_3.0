@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var exec = require('child_process').exec;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -17,8 +18,11 @@ var chooseat = require('./routes/choose_seat');
 var chooarea = require('./routes/choose_area');
 var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
+//require('./weixin_handler/request_handler');
 
 var app = express();
+
+exec('node ./weixin_handler/request_handler.js', function() {return;});
 
 process.on('uncaughtException', function(err)
 {

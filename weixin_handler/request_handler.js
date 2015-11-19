@@ -1,6 +1,7 @@
 var at = require('../weixin_basic/access_token');
 var moduleMsg = require('../weixin_basic/module_message');
 var model = require('../models/models');
+var handlerTicket = require('../weixin_handler/handler_ticket');
 
 var REQUEST_DB = model.requests;
 var TICKET_DB = model.tickets;
@@ -12,11 +13,8 @@ var db = model.db;
 
 var alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
 
-var act_cache={};
-var rem_cache={};
-var tik_cache={};
+var tik_cache = {};
 var req_cache=new Array();
-var usr_lock={};
 
 var run_times = 0;
 
@@ -68,19 +66,6 @@ function generateUniqueCode(prefix,actKey)
     }
 }
 
-function getMinimum(array) {
-    var length = array.length;
-    var min_time = array[0];
-
-    for (var i = 1; i < length; ++i) {
-        if (min_time > array[i]) {
-            min_time = array[i];
-        }
-    }
-
-    return min_time;
-}
-
 function handleSingleActivity() {
 	run_times++;
 
@@ -119,16 +104,19 @@ function handleSingleActivity() {
                 tik_cache[name].tikMap = {};
             }
             remain_tickets = docs2[0].remain_tickets;
+            if (req.type == 1){//退票成功
+                remain_tickets += 1;
+                db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
+                handleSingleActivity();
+                return;
+            }
             activityName = docs2[0].name;
             activityTime = getTime(docs2[0].start_time)+" ~ "+getTime(docs2[0].end_time);
             activityPos = docs2[0].place;
             activity_id = docs2[0]._id;
             moduleMsg.setActivityInfo(activityName, activityTime, activityPos);
-            //var len = docs.length;
-            //console.log("len: "+len);
             var openid = req.weixin_id;
             distributeTicket(openid, docs2[0], remain_tickets, function() {
-                //setTimeout(handleSingleActivity, 4);
                 handleSingleActivity();
             });
         });
@@ -163,7 +151,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
             }
             callback();
         }else{
-            db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id}, function(err4, docs4){
+            db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id, status:1}, function(err4, docs4){
                 if (err4){
                     at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3);
                     callback();
