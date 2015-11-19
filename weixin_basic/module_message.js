@@ -96,7 +96,7 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid) {
 		method: 'POST'
     };
 
-    /*console.log(opt);
+    console.log(opt);
 
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
@@ -105,7 +105,7 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid) {
         })
     });
     req.write(tsuccessData);
-    req.end();*/
+    req.end();
 }
 
 exports.sendFailMessage = function (access_token, openid, reason) {
@@ -117,12 +117,14 @@ exports.sendFailMessage = function (access_token, openid, reason) {
     }
     if(reason < 0){
         failData.data.remark.value = "您的账号将于" + (-reason) + "次活动后被解禁。" + failData.data.remark.value;
+        failData.url = "";
     }else if(reason == 1){
         failData.data.remark.value = "请先点击详情进入绑定页面进行绑定，再进行抢票操作。" + failData.data.remark.value;
         failData.url = urls.validateAddress+"?openid="+openid;
     }
     else{
         failData.data.remark.value = "\n欢迎您继续关注后续抢票活动！";
+        failData.url = "";
     }
 
     var tfailData = JSON.stringify(failData);
@@ -133,7 +135,7 @@ exports.sendFailMessage = function (access_token, openid, reason) {
         method: 'POST'
     };
 
-    /*console.log(opt);
+    console.log(opt);
 
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
@@ -144,7 +146,7 @@ exports.sendFailMessage = function (access_token, openid, reason) {
         console.error(e);
     });
     req.write(tfailData);
-    req.end();*/
+    req.end();
 }
 
 
