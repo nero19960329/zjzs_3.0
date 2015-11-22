@@ -85,11 +85,18 @@ exports.setActivityInfo = function (name, time, pos){
     failData.data.keyword1.value = name;
 };
 */
+function addZero(num)
+{
+    if (num<10)
+        return "0"+num;
+    return ""+num;
+}
+
 function getTime(datet,isSecond)
 {
     if (!(datet instanceof Date))
         datet=new Date(datet);
-    datet.getMinutes()
+    datet.getMinutes();
     return datet.getFullYear() + "-"
         + (datet.getMonth()+1) + "-"
         + (datet.getDate()) + " "

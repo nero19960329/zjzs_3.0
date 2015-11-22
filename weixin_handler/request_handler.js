@@ -23,26 +23,6 @@ var time_2;
 
 handleSingleActivity();
 
-function addZero(num)
-{
-    if (num<10)
-        return "0"+num;
-    return ""+num;
-}
-
-function getTime(datet,isSecond)
-{
-    if (!(datet instanceof Date))
-        datet=new Date(datet);
-    datet.getMinutes()
-    return datet.getFullYear() + "-"
-        + (datet.getMonth()+1) + "-"
-        + (datet.getDate()) + " "
-        + addZero(datet.getHours()) + ":"
-        + addZero(datet.getMinutes())
-        + (isSecond===true? ":"+datet.getSeconds() : "");
-}
-
 function getRandomString()
 {
     var ret="";
