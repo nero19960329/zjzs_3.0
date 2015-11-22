@@ -85,6 +85,19 @@ exports.setActivityInfo = function (name, time, pos){
     failData.data.keyword1.value = name;
 };
 */
+function getTime(datet,isSecond)
+{
+    if (!(datet instanceof Date))
+        datet=new Date(datet);
+    datet.getMinutes()
+    return datet.getFullYear() + "-"
+        + (datet.getMonth()+1) + "-"
+        + (datet.getDate()) + " "
+        + addZero(datet.getHours()) + ":"
+        + addZero(datet.getMinutes())
+        + (isSecond===true? ":"+datet.getSeconds() : "");
+}
+
 exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT) {
 	successData.data.keyword1.value = staticACT.name;
     successData.data.keyword2.value = getTime(staticACT.start_time)+" ~ "+getTime(staticACT.end_time);
