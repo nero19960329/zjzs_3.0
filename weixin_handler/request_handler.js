@@ -110,11 +110,7 @@ function handleSingleActivity() {
                 handleSingleActivity();
                 return;
             }
-            activityName = docs2[0].name;
-            activityTime = getTime(docs2[0].start_time)+" ~ "+getTime(docs2[0].end_time);
-            activityPos = docs2[0].place;
-            activity_id = docs2[0]._id;
-            moduleMsg.setActivityInfo(activityName, activityTime, activityPos);
+            
             var openid = req.weixin_id;
             distributeTicket(openid, docs2[0], remain_tickets, function() {
                 handleSingleActivity();
@@ -134,26 +130,26 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     var name = staticACT.key;
     db[USER_DB].find({weixin_id:openid}, function(err3, docs3){
         if (err3){
-            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3);
+            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3, staticACT);
             callback();
         }else if(docs3.length == 0){
             if(tik_cache[name].tikMap[openid] != true)
             {
                 tik_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 1);
+                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 1, staticACT);
             }
             callback();
         }else if (docs3[0].punish > 0){
             if(tik_cache[name].tikMap[openid] != true)
             {
                 tik_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, -docs3[0].punish);
+                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, -docs3[0].punish, staticACT);
             }
             callback();
         }else{
             db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id, status:1}, function(err4, docs4){
                 if (err4){
-                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3);
+                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3, staticACT);
                     callback();
                 }else if (docs4.length == 0){
             		if (remain_tickets > 0){
@@ -179,21 +175,21 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
 		                    seat:       "",
 		                    cost:       price
 		                });
-		                at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode);
+		                at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT);
             		}
             		else{
 				        // no more tickets
                         if(tik_cache[name].tikMap[openid] != true)
                         {
                             tik_cache[name].tikMap[openid] = true;
-				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 4);
+				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 4, staticACT);
                         }
                         callback();
             		}
                 }else{
                     if(tik_cache[name].tikMap[openid] != true)
                     {
-                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 2);
+                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 2, staticACT);
                     }
                     callback();
                 }

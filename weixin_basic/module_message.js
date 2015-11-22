@@ -73,6 +73,7 @@ var failData = {
         }
     }
 };
+/*
 exports.setActivityInfo = function (name, time, pos){
     //activityName = name;
     //activityTime = time;
@@ -82,9 +83,12 @@ exports.setActivityInfo = function (name, time, pos){
     successData.data.keyword3.value = pos;
 
     failData.data.keyword1.value = name;
-}
-
-exports.sendSuccessMessage = function (access_token, openid, ticketid) {
+};
+*/
+exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT) {
+	successData.data.keyword1.value = staticACT.name;
+    successData.data.keyword2.value = getTime(staticACT.start_time)+" ~ "+getTime(staticACT.end_time);
+    successData.data.keyword3.value = staticACT.place;
     successData.touser = openid;
     successData.data.keyword4.value = ticketid;
     successData.url = urls.ticketInfo + "?ticketid=" + ticketid;
@@ -102,13 +106,14 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid) {
         res.on('data', function (data) {
         	//process.stdout.write(data);
         	console.log(tsuccessData);
-        })
+        });
     });
     req.write(tsuccessData);
     req.end();
-}
+};
 
-exports.sendFailMessage = function (access_token, openid, reason) {
+exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
+	failData.data.keyword1.value = staticACT.name;
     failData.touser = openid;
     if (reason > 0){
         failData.data.keyword2.value = errors[reason];
