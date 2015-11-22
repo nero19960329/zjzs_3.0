@@ -22,7 +22,7 @@ var acquireid = require('./routes/acquireid');
 
 var app = express();
 
-exec('node ./weixin_handler/request_handler.js', function() {return;});
+//exec('node ./weixin_handler/request_handler.js', function() {return;});
 
 process.on('uncaughtException', function(err)
 {

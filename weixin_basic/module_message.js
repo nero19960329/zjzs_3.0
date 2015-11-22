@@ -120,13 +120,15 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
 		method: 'POST'
     };
 
-    console.log(opt);
+    //console.log(opt);
 
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
         	//process.stdout.write(data);
-        	console.log(tsuccessData);
+        	//console.log(tsuccessData);
         });
+    }).on('error', function(e) {
+	console.error(e);
     });
     req.write(tsuccessData);
     req.end();
@@ -160,12 +162,12 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
         method: 'POST'
     };
 
-    console.log(opt);
+    //console.log(opt);
 
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
             //process.stdout.write(data);
-            console.log(tfailData);
+            //console.log(tfailData);
         })
     }).on('error', function(e){
         console.error(e);

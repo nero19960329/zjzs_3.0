@@ -56,7 +56,7 @@ function handleSingleActivity() {
                 tik_cache = {};
                 //300000 in use;1000 in test
                 time_2 = (new Date()).getTime();
-                console.log("time: " + (time_2 - time_1));
+                //console.log("time: " + (time_2 - time_1));
                 setTimeout(handleSingleActivity, 1000);
                 return -1;
             }
@@ -66,7 +66,8 @@ function handleSingleActivity() {
     } else {
         var req = req_cache[req_cache.length-1];
         --req_cache.length;
-        db[REQUEST_DB].remove({_id:req._id});
+        //console.log("req_cache.length: " + req_cache.length);
+	db[REQUEST_DB].remove({_id:req._id});
         
         var remain_tickets = 0;
         var activityName = "";
@@ -135,9 +136,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
             		if (remain_tickets > 0){
                         remain_tickets--;
                         db[ACTIVITY_DB].update({key:staticACT.key}, {$set:{remain_tickets:remain_tickets}}, function(err100, count){
-                            callback();
-                        });
-                        tik_cache[name].tikMap[openid] = true;
+                         tik_cache[name].tikMap[openid] = true;
 		                var stuID = docs3[0].stu_id;
 		                var ss = staticACT._id.toString();
 		                var tiCode = generateUniqueCode(ss.substr(0,8)+ss.substr(14),staticACT.key);
@@ -154,9 +153,12 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
 		                    status:     1,
 		                    seat:       "",
 		                    cost:       price
-		                });
-		                at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT);
-            		}
+		                }, function(err101, count) {
+					at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT);
+					callback();
+				});
+                        });
+                                    		}
             		else{
 				        // no more tickets
                         if(tik_cache[name].tikMap[openid] != true)

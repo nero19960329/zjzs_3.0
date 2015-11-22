@@ -33,8 +33,8 @@ module.exports = function(req, res)
             return;
         }
         var msg=result.xml;
-        console.log("msg: " + msg);
-        console.log("content: " + msg.Content[0]);
+	//console.log("msg: " + msg);
+        //console.log("content: " + msg.Content[0]);
         for (var i=0;i<pattern.length;i++)
         {
             if (pattern[i][0](msg))
