@@ -19,7 +19,7 @@ function random_bind(i) {
 		weixin_id: "" + i,
 		stu_id: "" + i,
 		status: 1,
-		credit: 0,
+		credits: 0,
 		punish: 0
 	}, function(err, docs) {
 		if (err) {

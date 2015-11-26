@@ -21,6 +21,6 @@ exports.getIDClass=function(idValue)
     return mongojs.ObjectId(idValue);
 }
 
-exports.authIP = "127.0.0.1";
+exports.authIP = "101.200.233.45";
 exports.authPort = 9003;
 exports.authPrefix = "/v1";

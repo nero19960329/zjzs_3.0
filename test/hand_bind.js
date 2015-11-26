@@ -18,7 +18,7 @@ fs.readFile("./open_ids_u.txt", "utf-8", function(err, data) {
 			weixin_id: open_id,
 			stu_id: open_id,
 			status: 1,
-			credit: 0,
+			credits: 0,
 			punish: 0
 		}, function(err, docs) {
 			if (err) {
