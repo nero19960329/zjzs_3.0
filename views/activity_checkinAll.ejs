@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>检票 - <%= activity.name %> - 紫荆之声</title>
+    <title>检票 - 紫荆之声</title>
     <link rel="stylesheet" href="/lib/bs/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/stylesheets/activity_checkin.css" />
+    <link rel="stylesheet" href="/stylesheets/activity_checkinAll.css" />
 </head>
 <body onload="auto_adjust();" onresize="auto_adjust();">
 <div id="common-header" class="full-div">
@@ -21,7 +21,7 @@
 
 </div>
 <div id="checkin-screen" class="full-div" style="display: none;">
-    <form role="form" method="post" id="checkin-form" action="/users/manage/checkinAll>
+    <form role="form" method="post" id="checkin-form" action="/users/manage/checkinAll">
         <div class="form-group col-xs-offset-2 col-xs-8">
             <input class="form-control input-lg" type="text" id="input-uid" name="uid" placeholder="扫描二维码"
                    onblur="setTimeout(function(){$('#input-uid').focus();});" autocomplete="off" required maxlength="32">

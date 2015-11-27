@@ -77,7 +77,7 @@ function append_tickets_table(uid) {
         $('#tickets-table-body tr:last-child').remove();
     }
     ++tickets_count;
-    $('#tickets-table-body').prepend('<tr class="warning"><td class="ticket-no">' + tickets_count + '</td><td class="ticket-status"><img class="ticket-status-img" src="/img/checking.gif"></td><td class="ticket-uid">' + uid + '</td><td class="ticket-stuid"></td><td class="ticket-time">' + new Date().toLocaleTimeString() + '</td><td class="ticket-msg"></td>');
+    $('#tickets-table-body').prepend('<tr class="warning"><td class="ticket-no">' + tickets_count + '</td><td class="ticket-status"><img class="ticket-status-img" src="/img/checking.gif"></td><td class="ticket-uid">' + uid + '</td><td class="ticket-stuid"></td><td class="ticket-time">' + new Date().toLocaleTimeString() + '</td><td class="ticket-activity"></td></td><td class="ticket-msg"></td>');
 }
 
 function update_tickets_table(data) {
