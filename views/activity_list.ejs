@@ -110,15 +110,21 @@
                     'end_time': new Date(<%= activities1[i].end_time %>),
                     'place': '<%= activities1[i].place %>',
                     'delete': '<%= activities1[i].id %>',
-                    'operations': {'detail':'/users/manage/detail?actid=<%= activities1[i].id %>','export':'/users/manage/export?actid=<%= activities1[i].id %>', 'checkin':'/users/manage/checkin?actid=<%= activities1[i].id %>', 'preview':'/actinfo?actid=<%= activities1[i].id %>'},
+                    'operations': {
+                        'detail': '/users/manage/detail?actid=<%= activities1[i].id %>',
+                        'export': '/users/manage/export?actid=<%= activities1[i].id %>',
+                        'checkin': '/users/manage/checkin?actid=<%= activities1[i].id %>',
+                        'preview': '/actinfo?actid=<%= activities1[i].id %>',
+                        'publish': '/users/manage/publish?actid=<%= activities1[i].id %>'
+                    },
                     'book_start': new Date(<%= activities1[i].book_start %>),
                     'book_end': new Date(<%= activities1[i].book_end %>)
                 } <% if (i != activities1.length-1) {%>,<% } %>
             <% } %>
         ];
-        var operations_name = {'detail':'详情', 'export':'导出', 'checkin':'检票', 'preview':'预览'};
-        var operations_icon = {'detail':'pencil', 'export':'export', 'checkin':'check', 'preview':'file'};
-        var operations_target = {'detail':'', 'export':'_blank', 'checkin':'_blank', 'preview':'_blank'};
+        var operations_name = {'detail':'详情', 'export':'导出', 'checkin':'检票', 'preview':'预览', 'publish': '推送'};
+        var operations_icon = {'detail':'pencil', 'export':'export', 'checkin':'check', 'preview':'file', 'publish': ''};
+        var operations_target = {'detail':'', 'export':'_blank', 'checkin':'_blank', 'preview':'_blank', 'publish': '_blank'};
     </script>
     <script src="/javascripts/activity_list.js"></script>
 </body>
