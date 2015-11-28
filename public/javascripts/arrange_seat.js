@@ -17,9 +17,14 @@ function InitSeatRender() {
     if (table != null) {
         for (i = 0; i < table.rows.length; i ++) {
             for (j = 0; j < table.rows[i].cells.length; j ++) {
-                table.rows[i].cells[j].onclick = function () {
-                    HandleClick(this);
+                table.rows[i].cells[j].onmouseover = function (e) {
+                    if (e.which === 1)
+                        HandleClick(this);
                 };
+
+                table.rows[i].cells[j].onmousedown = function(e) {
+                    HandleClick(this);
+                }
             }
         }
     }
