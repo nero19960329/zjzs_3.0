@@ -257,7 +257,7 @@ router.post("/", function(req, res)
 						}
 						else //抢票还没开始
 						{
-							if (moment(activity["book_end"]).isBefore(docs[0]["book_start"]))
+							if (moment(activity["book_end"]).isBefore(activity["book_start"]))
 							{
 								res.send("404#抢票结束时间早于开始时间！请重新检查。");
 								lock.release(ACTIVITY_DB);
@@ -285,7 +285,6 @@ router.post("/", function(req, res)
 			});
 		});
 	}
-
 });
 
 router.get("/", function(req, res)

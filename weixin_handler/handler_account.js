@@ -7,6 +7,8 @@ var act_infoer = require("../weixin_basic/activity_info");
 var checker = require("./checkRequest");
 var basicInfo = require("../weixin_basic/settings.js");
 
+var handleRequest = require("../routes/handleRequest.js");
+
 //Attentez: keep the activity::key unique globally.
 var TICKET_DB = model.tickets;
 var USER_DB = model.students;
@@ -24,6 +26,7 @@ exports.check_bind_accout=function(msg)
 }
 function sendBindInfo(msg,res,openID)
 {
+    console.log(openID);
     res.send(
         template.getPlainTextTemplate(msg,"请在绑定页面输入学生卡号以及校园账户密码以验证身份。\n"
             + template.getHyperLink("打开绑定页面",urls.validateAddress+"?openid="+openID))
@@ -106,6 +109,7 @@ exports.faire_bookable_activity=function(msg,res)
             tmpEle[template.rich_attr.picture]=docs[i].pic_url;
             showList.push(tmpEle);
         }
+        //handleRequest.handleSingleActivity("rp不洗澡4");
         res.send(template.getRichTextTemplate(msg,showList));
     });
 }

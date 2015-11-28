@@ -6,6 +6,7 @@ var model = require('../models/models');
 var lock = require('../models/lock');
 var urls = require("../address_configure");
 var checkin = require('./checkin');
+var checkinAll = require('./checkinAll');
 var cm = require("../weixin_basic/custom_menu");
 var act_info = require('../weixin_basic/activity_info');
 var cache = require("../weixin_handler/handler_ticket");
@@ -30,6 +31,7 @@ router.get("/", function(req, res)
 	res.redirect("/users/manage/list");
 });
 
+router.use("/checkinAll",checkinAll);
 router.use("/checkin",checkin);
 router.use("/list", listRoute);
 router.use("/delete", deleteRoute);

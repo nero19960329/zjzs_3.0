@@ -6,6 +6,8 @@ bin/*
 address_configure.js
 public/uploadpics/*
 weixin_basic/settings.js
+configure.js
+npm-debug.log
 journal
 *.0
 *.ns
