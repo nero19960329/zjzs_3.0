@@ -136,29 +136,29 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
             		if (remain_tickets > 0){
                         remain_tickets--;
                         db[ACTIVITY_DB].update({key:staticACT.key}, {$set:{remain_tickets:remain_tickets}}, function(err100, count){
-                         tik_cache[name].tikMap[openid] = true;
-		                var stuID = docs3[0].stu_id;
-		                var ss = staticACT._id.toString();
-		                var tiCode = generateUniqueCode(ss.substr(0,8)+ss.substr(14),staticACT.key);
-		                var price = 0;
-		                if(staticACT.need_seat == 2){
-		                    price = parseInt(staticACT.price);
-		                }
-                        console.log("stu_id: " + stuID);
-		                db[TICKET_DB].insert(
-		                {
-		                    stu_id:     stuID,
-		                    unique_id:  tiCode,
-		                    activity:   staticACT._id,
-		                    status:     1,
-		                    seat:       "",
-		                    cost:       price
-		                }, function(err101, count) {
-					at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT);
-					callback();
-				});
+                            tik_cache[name].tikMap[openid] = true;
+    		                var stuID = docs3[0].stu_id;
+    		                var ss = staticACT._id.toString();
+    		                var tiCode = generateUniqueCode(ss.substr(0,8)+ss.substr(14),staticACT.key);
+    		                var price = 0;
+    		                if(staticACT.need_seat == 2){
+    		                    price = parseInt(staticACT.price);
+    		                }
+                            console.log("stu_id: " + stuID);
+    		                db[TICKET_DB].insert(
+    		                {
+    		                    stu_id:     stuID,
+    		                    unique_id:  tiCode,
+    		                    activity:   staticACT._id,
+    		                    status:     1,
+    		                    seat:       "",
+    		                    cost:       price
+    		                }, function(err101, count) {
+            					at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT);
+            					callback();
+            				});
                         });
-                                    		}
+                    }
             		else{
 				        // no more tickets
                         if(tik_cache[name].tikMap[openid] != true)
