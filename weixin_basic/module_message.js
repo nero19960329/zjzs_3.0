@@ -14,11 +14,11 @@ var activityPos = "";
 // 2 : already get ticket
 // 3 : db errors
 // 4 : no more ticket
-var errors = {1:"您没有未绑定学号。", 2:"您已经抢到票了，不能再抢。", 3:"数据库炸了(╯‵□′)╯︵┻━┻", 4:"您来晚了，票已经被抢完了。"};
+var errors = {1:"您没有绑定学号。", 2:"您已经抢到票了，不能再抢。", 3:"数据库炸了(╯‵□′)╯︵┻━┻", 4:"您来晚了，票已经被抢完了。"};
 
 var successData = {
     "touser": "",
-    "template_id":"k6H6vuy2fcsz9JYKQ_rK1YybYLORpJ8NhJNqcLqKhKs",
+    "template_id":"hqSm2GIkM0E-hyfJ4kfKt7NCWbGmd0N8OYgFR28lcsk",
     "url":"",
     "topcolor":"#FF0000",
     "data":{
@@ -51,7 +51,7 @@ var successData = {
 
 var failData = {
     "touser": "",
-    "template_id":"bJcuCksZhI36c9OBWBMolPHcnAH_fMEy-Qrj4unLv7s",
+    "template_id":"wIFe7ynUxTsziuOz0wJx956OYb-X1GWlJ6t2I8X6s0o",
     "url":"",
     "topcolor":"#FF0000",
     "data":{
@@ -117,7 +117,10 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
 		hostname: 'api.weixin.qq.com',
 		port: '443',
 		path: '/cgi-bin/message/template/send?access_token='+access_token,
-		method: 'POST'
+		method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     };
 
     //console.log(opt);
@@ -145,10 +148,10 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
         failData.data.keyword2.value = "由于以前的不良抢票记录，账号被冻结。";
     }
     if(reason < 0){
-        failData.data.remark.value = "您的账号将于" + (-reason) + "次活动后被解禁。" + failData.data.remark.value;
+        failData.data.remark.value = "您的账号将于" + (-reason) + "次活动后被解禁。\n欢迎您继续关注后续抢票活动！";
         failData.url = "";
     }else if(reason == 1){
-        failData.data.remark.value = "请先点击详情进入绑定页面进行绑定，再进行抢票操作。" + failData.data.remark.value;
+        failData.data.remark.value = "请先点击详情进入绑定页面进行绑定，再进行抢票操作。\n欢迎您继续关注后续抢票活动！";
         failData.url = urls.validateAddress+"?openid="+openid;
     }
     else{
@@ -161,7 +164,10 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
         hostname: 'api.weixin.qq.com',
         port: '443',
         path: '/cgi-bin/message/template/send?access_token='+access_token,
-        method: 'POST'
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     };
 
     //console.log(opt);

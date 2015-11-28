@@ -109,7 +109,7 @@ function handleSingleActivity() {
 // 4 : no more ticket
 function distributeTicket(openid, staticACT, remain_tickets, callback){
     var name = staticACT.key;
-    db[USER_DB].find({weixin_id:openid}, function(err3, docs3){
+    db[USER_DB].find({weixin_id:openid, status:1}, function(err3, docs3){
         if (err3){
             at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3, staticACT);
             callback();

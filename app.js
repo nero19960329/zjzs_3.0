@@ -18,6 +18,7 @@ var chooseat = require('./routes/choose_seat');
 var chooarea = require('./routes/choose_area');
 var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
+var configure = require('./configure');
 //require('./weixin_handler/request_handler');
 
 var app = express();
@@ -41,7 +42,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret: 'Bingo Lingo!', saveUninitialized: false, resave: false}));
+app.use(session({secret: configure.session_secret, saveUninitialized: false, resave: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/weixin', weixin);

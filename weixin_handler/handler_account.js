@@ -26,6 +26,7 @@ exports.check_bind_accout=function(msg)
 }
 function sendBindInfo(msg,res,openID)
 {
+    console.log(openID);
     res.send(
         template.getPlainTextTemplate(msg,"请在绑定页面输入学生卡号以及校园账户密码以验证身份。\n"
             + template.getHyperLink("打开绑定页面",urls.validateAddress+"?openid="+openID))
