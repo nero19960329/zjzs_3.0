@@ -438,7 +438,7 @@
             'name': '<%= activity.name %>'<% if (activity.id) { %>,
             'id': '<%= activity.id %>',
             'key': '<%= activity.key %>',
-            'description': '<%- activity.description %>',
+            'description': '<%= activity.description %>',
             'pic_url': '<%= activity.pic_url %>',
             'need_seat': <%= activity.need_seat %>,
             'start_time': {
@@ -485,7 +485,7 @@
                 }
             <% } %>
             <% if (activity.need_seat == 2) { %>
-                , 'seat_map': JSON.parse('<%- activity.seat_map %>')
+                , 'seat_map': JSON.parse('<%= activity.seat_map %>')
                 , 'price': <%= activity.price %>
             <% } %>
         }
