@@ -50,7 +50,12 @@ router.get('/', function(req, res) {
       current_time: (new Date()).getTime(),
       act_name: act_obj.name,
       seat_type: act_obj.need_seat,
-      act_desc: act_obj.description,
+      act_desc: act_obj.description
+        .replace(/ /g,"&nbsp;")
+        .replace(/"/g,"&quot;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\\n/g,"<br>"),
       act_pic_url: act_obj.pic_url,
       ticket_status: act_obj.status,
       act_key: act_obj.key,
@@ -59,7 +64,7 @@ router.get('/', function(req, res) {
       isManager: false
     };
 
-    res.render('activity_detail_user', actinfo, function(err, html) {
+    res.render('activity_detail_user_news', actinfo, function(err, html) {
       if (err) {
         res.send('模板错误');
         console.error(err);
@@ -101,14 +106,14 @@ router.get('/', function(req, res) {
           }
 
           console.log(news_result);
-          api.massSendNews(news_result.media_id, { }, function(err, mass_result) {
+          api.previewNews('oa7m1t8aOmoGDoGRaULZeHii65RE', news_result.media_id, function(err, mass_result) {
             if (err) {
               res.send('图文消息推送失败');
               console.error(err);
               return;
             }
 
-            res.send('推送成功');
+            res.send('<html><head></head><body><h1>推送成功 三秒后返回</h1><script> window.onload = function() { setTimeout(function() { window.location = "/users/manage/list"; }, 3000); } </script></body></html>');
           });
         });
       });
