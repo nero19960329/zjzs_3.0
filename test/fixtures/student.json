@@ -1,0 +1,65 @@
+[
+  {
+    "weixin_id": "student1",
+    "stu_id": "2014311933",
+    "status":1,
+    "credits":0,
+    "punish":0
+  },
+  {
+    "weixin_id": "student2",
+    "stu_id": "2014311934",
+    "status":1,
+    "credits":0,
+    "punish":0
+  },
+  {
+    "weixin_id": "student3",
+    "stu_id": "2014311935",
+    "status":1,
+    "credits":0,
+    "punish":0
+  },
+  {
+    "weixin_id": "student4",
+    "stu_id": "2014311936",
+    "status":1,
+    "credits":0,
+    "punish":1
+  },
+  {
+    "weixin_id": "student5",
+    "stu_id": "2014311937",
+    "status":1,
+    "credits":0,
+    "punish":2
+  },
+  {
+    "weixin_id": "student6",
+    "stu_id": "2014311938",
+    "status":1,
+    "credits":2,
+    "punish":0
+  },
+  {
+    "weixin_id": "student7",
+    "stu_id": "2014311939",
+    "status":1,
+    "credits":0,
+    "punish":0
+  },
+  {
+    "weixin_id": "student8",
+    "stu_id": "2014311940",
+    "status":1,
+    "credits":0,
+    "punish":0
+  },
+  {
+    "weixin_id": "student9",
+    "stu_id": "2014311941",
+    "status":1,
+    "credits":0,
+    "punish":0
+  }
+]

@@ -8,6 +8,8 @@ var activityName = "";
 var activityTime = "";
 var activityPos = "";
 
+
+
 // <0: punished value
 // 0 : ticket avaliable
 // 1 : haven't validated
@@ -122,7 +124,6 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-
     //console.log(opt);
 
     var req = http.request(opt, function (res) {
@@ -137,6 +138,7 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
     });
     req.write(tsuccessData);
     req.end();
+    
 };
 
 exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
@@ -169,7 +171,6 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-
     //console.log(opt);
 
     var req = http.request(opt, function (res) {
@@ -189,6 +190,7 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
     console.log(req.write(tfailData));
     console.log("write ok");
     req.end();
+    s
 };
 
 

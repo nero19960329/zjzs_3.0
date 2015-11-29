@@ -228,7 +228,7 @@ exports.faire_reinburse_ticket=function(msg,res)
 					time : current_time,
 					type: 1		// 0代表抢票，1代表退票成功
 				}, function(err, result) {
-					res.send(template.getPlainTextTemplate(msg,"退票成功"));
+					res.send(template.getPlainTextTemplate(msg,"退票成功。"));
 				});
             });
         });

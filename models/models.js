@@ -13,7 +13,12 @@ exports.admins = admins;
 exports.seats = seats;
 exports.requests = requests;
 
-exports.db = mongojs('mongodb://localhost/ticket', [tickets, activities, students, admins, seats, requests]);
+var dbUrl = 'mongodb://localhost/ticket';
+if (process.env.NODE_ENV === 'test') {
+    dbUrl = 'mongodb://localhost/test';
+}
+
+exports.db = mongojs(dbUrl, [tickets, activities, students, admins, seats, requests]);
 
 exports.getIDClass=function(idValue)
 {
