@@ -363,7 +363,7 @@
                 <div class="col-sm-10" id="div-seatmap_moduleselect_wrapper">
                     <select name="seat_module" id="input-seat_module" style="width: 75%; display: inline;" onchange="seatModuleChange();" class="form-control" required>
                     </select>
-                    <input class="form-control" id="input-seat_module_name" value="" style="width: 75%; display: none;" placeholder="请输入新模板的名称">
+                    <input class="form-control" id="input-seat_module_name" value="" style="width: 75%; display: none;" oninput="$('#input-seat_module_name').popover('destroy');" onkeydown="if(event.keyCode == 13) return false;"placeholder="请输入新模板的名称">
                     <button type="button" onclick="newSeatModule();" class="btn btn-info" style="width: 10%; display: inline; margin-left: 1.5%" id="input-new_module">新建模板</button>
                     <button type="button" onclick="deleteSeatModule();" class="btn btn-info" disabled="true" style="width: 10%; display: inline; margin-left: 1.5%" id="input-modify_module">删除模板</button>
                 </div>

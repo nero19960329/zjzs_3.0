@@ -838,15 +838,33 @@ function inputNeedSeatChange(){
 }
 
 function setPopOver(obj, str) {
+	obj.popover('destroy');
     obj.popover({
         html: true,
         placement: 'top',
         title:'',
         content: '<span style="color:red;">' + str + '</span>',
         trigger: 'focus',
-        container: 'body'
+        container: 'body',
+        hide: 1000
     });
     obj.focus();
+}
+
+function checkName(str) {
+	var length = str.length;
+	if (length >= 10) {
+		return "模板名称过长，长度应小于等于10";
+	} else if (str === "") {
+		return "您必须输入一个模板名称";
+	} else {
+		for (var i = 0; i < length; ++i) {
+			if (str[i] != ' ') {
+				return "";
+			}
+		}
+		return "模板名称不能都是空格";
+	}
 }
 
 function newSeatModule() {
@@ -863,8 +881,9 @@ function newSeatModule() {
         activity.seat_map = activity.seat_module[0].seat_map;
         RenderMap();
     } else {
-        if (seatModuleNameInput.val() === "") {
-            setPopOver(seatModuleNameInput, "请输入新模板的名称");
+    	var checkName_value = checkName(seatModuleNameInput.val());
+        if (checkName_value != "") {
+            setPopOver(seatModuleNameInput, checkName_value);
             return;
         }
 
@@ -890,21 +909,23 @@ function newSeatModule() {
                     setPopOver(seatModuleNameInput, "已经拥有相同名称的模板，请修改！");
                 } else {
                     thisButton.text('新建模板');
-                    //$('#input-modify_module').attr("disabled", false);
+                    $('#input-modify_module').attr("disabled", false);
                     seatModule.css('display', 'inline');
                     seatModuleNameInput.css('display', 'none');
 
                     seatModule.empty();
                     showSeatModuleNames(data.seat_maps);
                     activity.seat_module = data.seat_maps;
-
-                    activity.seat_map = activity.seat_module[0].seat_map;
+					
+					var length = activity.seat_module.length;
+                    activity.seat_map = activity.seat_module[length - 1].seat_map;
+                    seatModule.val(length - 1);
                     RenderMap();
                 }
             },
             error: function(xhr) {
                 console.log('error!');
-                setPopOver(setMouleNameInput, "新建模板失败！");
+                setPopOver(seatMouleNameInput, "新建模板失败！");
             },
             complete: function(xhr) {
                 console.log('complete!');
