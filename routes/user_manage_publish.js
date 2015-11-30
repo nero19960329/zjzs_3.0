@@ -41,12 +41,33 @@ router.get('/', function(req, res) {
     }
 
     var act_obj = docs[0];
+    var act_start_date = new Date(act_obj.start_time).toLocaleDateString();
+    var act_start_time = new Date(act_obj.start_time).toLocaleTimeString();
+    var act_end_date = new Date(act_obj.end_time).toLocaleDateString();
+    var act_end_time = new Date(act_obj.end_time).toLocaleTimeString();
+
+    act_start_time = act_start_time.substr(0, act_start_time.length - 3);
+    act_end_time = act_end_time.substr(0, act_end_time.length - 3);
+
+    var act_start_time_str = act_start_date + ' ' + act_start_time;
+    var act_end_time_str = (act_start_date === act_end_date)? act_end_time: act_end_date + ' ' + act_end_time;
+
+    var act_book_start_date = new Date(act_obj.book_start).toLocaleDateString();
+    var act_book_start_time = new Date(act_obj.book_start).toLocaleTimeString();
+    var act_book_end_date = new Date(act_obj.book_end).toLocaleDateString();
+    var act_book_end_time = new Date(act_obj.book_end).toLocaleTimeString();
+
+    act_book_start_time = act_book_start_time.substr(0, act_book_start_time.length - 3);
+    act_book_end_time = act_book_end_time.substr(0, act_book_end_time.length - 3);
+
+    var act_book_start_time_str = act_book_start_date + ' ' + act_book_start_time;
+    var act_book_end_time_str = (act_book_start_date === act_book_end_date)? act_book_end_time: act_book_end_date + ' ' + act_book_end_time;
 
     var actinfo = {
-      act_start: act_obj.start_time,
-      act_book_start: act_obj.book_start,
-      act_end: act_obj.end_time,
-      act_book_end: act_obj.book_end,
+      act_start_time_str: act_start_time_str,
+      act_end_time_str: act_end_time_str,
+      act_book_start_time_str: act_book_start_time_str,
+      act_book_end_time_str: act_book_end_time_str,
       current_time: (new Date()).getTime(),
       act_name: act_obj.name,
       seat_type: act_obj.need_seat,
@@ -56,12 +77,12 @@ router.get('/', function(req, res) {
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/\\n/g,"<br>"),
-      act_pic_url: act_obj.pic_url,
-      ticket_status: act_obj.status,
-      act_key: act_obj.key,
-      rem_tik: act_obj.remain_tickets,
-      act_place: act_obj.place,
-      isManager: false
+      //act_pic_url: act_obj.pic_url,
+      //ticket_status: act_obj.status,
+      //act_key: act_obj.key,
+      //rem_tik: act_obj.remain_tickets,
+      act_place: act_obj.place
+      //isManager: false
     };
 
     res.render('activity_detail_user_news', actinfo, function(err, html) {
