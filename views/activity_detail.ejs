@@ -355,9 +355,23 @@
                     <input type="number" min="0" name="price" class="form-control" id="input-price" placeholder="请输入票价RMB">
                 </div>
             </div>
+        </form>
 
+        <form class="form-horizontal" role="form" method="post" action="/users/manage/seatModule"  id="seat_module-form">
+            <div class="form-group" id="div-seatmap_module" style="display: none;">
+                <label class="col-sm-2 control-label">座位模板</label>
+                <div class="col-sm-10" id="div-seatmap_moduleselect_wrapper">
+                    <select name="seat_module" id="input-seat_module" style="width: 75%; display: inline;" onchange="seatModuleChange();" class="form-control" required>
+                    </select>
+                    <input class="form-control" id="input-seat_module_name" value="" style="width: 75%; display: none;" placeholder="请输入新模板的名称">
+                    <button type="button" onclick="newSeatModule();" class="btn btn-info" style="width: 10%; display: inline; margin-left: 1.5%" id="input-new_module">新建模板</button>
+                    <button type="button" onclick="deleteSeatModule();" class="btn btn-info" disabled="true" style="width: 10%; display: inline; margin-left: 1.5%" id="input-modify_module">删除模板</button>
+                </div>
+            </div>
+        </form>
 
-            <div id = "div-seat_arrange" class="form-group" style="display: none;">
+        <form class="form-horizontal" role="form" method="post" action="/users/manage/detail"  id="activity-form">
+            <div id = "div-seat_arrange" class="form-group" style="display: none;" form="activity-form">
                 <label for="input-seat_arrange" class="col-sm-2 control-label">分配座位</label>
                 <div id = "input-seat_arrange" class="form-inline col-sm-10">
                     <table id = "tb_Seat">
@@ -379,14 +393,13 @@
 
 
 
-            <div class="form-group">
+            <div class="form-group" form="activity-form">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="button" onclick="publishActivity();" class="btn btn-primary" id="publishBtn">发布</button>
                     <button type="submit" class="btn btn-default" id="saveBtn">暂存</button>
                     <button type="reset" class="btn btn-warning" id="resetBtn">重置</button>
                 </div>
             </div>
-
         </form>
     </div>
 
@@ -435,7 +448,9 @@
 
     <script>
         var activity = {
-            'name': '<%= activity.name %>'<% if (activity.id) { %>,
+            'name': '<%= activity.name %>',
+            'seat_module': '<%= activity.seat_module %>'
+            <% if (activity.id) { %>,
             'id': '<%= activity.id %>',
             'key': '<%= activity.key %>',
             'description': '<%= activity.description %>',
@@ -489,7 +504,7 @@
                 , 'price': <%= activity.price %>
             <% } %>
         }
-        console.log(activity.seat_map[0][3]);
+        //console.log(activity.seat_map[0][3]);
 
     </script>
 
