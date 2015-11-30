@@ -146,47 +146,51 @@ router.get("/", function(req, res)
 {
     checkValidity(req,res,function(ticketID, activityID, bookend)
     {
-        db[SEAT_DB].find({activity:activityID},function(err, docs)
-        {
-            if (err || docs.length==0)
+        lock.acquire(SEAT_DB, function(){
+            db[SEAT_DB].find({activity:activityID},function(err, docs)
             {
-                res.send("Error.");
-                return;
-            }
-            var errorid=100;
-            if (req.query.err!=null)
-                errorid=1;
-            var seatMap={},line,row;
-            for (var i in docs[0])
-            {
-                if (i!="_id" && i!="activity" && i.length>=2)
+                if (err || docs.length==0)
                 {
-                    line=i[0]+"";
-                    row=i.substr(1);
-                    if (seatMap[line]==null)
-                        seatMap[line]=[];
-                    if (docs[0][i]>0)
-                        seatMap[line].push(parseInt(row));
+                    res.send("Error.");
+                    lock.release(SEAT_DB);
+                    return;
                 }
-            }
-            var seatMap2=[];
-            var alpha="ABCDEFGH";
-            for (var i=0;i<8;i++)
-            {
-                if (seatMap[alpha[i]]==null)
-                    seatMap2[i]=[];
-                else
-                    seatMap2[i]=seatMap[alpha[i]];
-            }
-            var inf=
-            {
-                tid:        ticketID,
-                bookddl:    getTime(bookend),
-                seatMap:    JSON.stringify(seatMap2),
-                errorid:    errorid
-            };
+                var errorid=100;
+                if (req.query.err!=null)
+                    errorid=1;
+                var seatMap={},line,row;
+                for (var i in docs[0])
+                {
+                    if (i!="_id" && i!="activity" && i.length>=2)
+                    {
+                        line=i[0]+"";
+                        row=i.substr(1);
+                        if (seatMap[line]==null)
+                            seatMap[line]=[];
+                        if (docs[0][i]>0)
+                            seatMap[line].push(parseInt(row));
+                    }
+                }
+                var seatMap2=[];
+                var alpha="ABCDEFGH";
+                for (var i=0;i<8;i++)
+                {
+                    if (seatMap[alpha[i]]==null)
+                        seatMap2[i]=[];
+                    else
+                        seatMap2[i]=seatMap[alpha[i]];
+                }
+                var inf=
+                {
+                    tid:        ticketID,
+                    bookddl:    getTime(bookend),
+                    seatMap:    JSON.stringify(seatMap2),
+                    errorid:    errorid
+                };
 
-            res.render("seat_litang",inf);
+                res.render("seat_litang",inf);
+                lock.release(SEAT_DB);
+            });
         });
     });
 });
@@ -201,28 +205,33 @@ router.post("/", function(req, res)
         var toModify={};
         toModify[realName]=-1;
         console.log(realName);
-        db[SEAT_DB].update(toFind,{$inc:toModify},{multi:false},function(err,result)
-        {
-            if (err || result.n==0)
-            {
-                //WARNING!
-                res.redirect(urls.chooseseat+"?ticketid="+ticketID+"&err=1");
-                return 0;
-            }
-            db[TICKET_DB].update({unique_id: req.query.ticketid, status:{$ne:0}},
-            {
-                $set:{seat:realName}
-            },{multi:false},function(err,result)
+        lock.acquire(SEAT_DB, function(){
+            db[SEAT_DB].update(toFind,{$inc:toModify},{multi:false},function(err,result)
             {
                 if (err || result.n==0)
                 {
-                    //ROLL BACK, supposed never to be executed.
-                    res.send("Fatal Failure!");
-                    toModify[realName]=1;
-                    db[SEAT_DB].update({activity: activityID},{$inc:toModify},{multi:false},function(){});
-                    return;
+                    //WARNING!
+                    res.redirect(urls.chooseseat+"?ticketid="+ticketID+"&err=1");
+                    lock.release(SEAT_DB);
+                    return 0;
                 }
-                res.redirect(urls.ticketInfo+"?ticketid="+ticketID);
+                db[TICKET_DB].update({unique_id: req.query.ticketid, status:{$ne:0}},
+                {
+                    $set:{seat:realName}
+                },{multi:false},function(err,result)
+                {
+                    if (err || result.n==0)
+                    {
+                        //ROLL BACK, supposed never to be executed.
+                        res.send("Fatal Failure!");
+                        toModify[realName]=1;
+                        db[SEAT_DB].update({activity: activityID},{$inc:toModify},{multi:false},function(){});
+                        lock.release(SEAT_DB);
+                        return;
+                    }
+                    res.redirect(urls.ticketInfo+"?ticketid="+ticketID);
+                    lock.release(SEAT_DB);
+                });
             });
         });
     });

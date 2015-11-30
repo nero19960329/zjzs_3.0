@@ -129,6 +129,8 @@ exports.check_get_ticket=function(msg)
 }
 
 exports.save_ticket_request = function(msg, res) {
+	console.log("str: " + msg);
+
     var weixin_id, act_name, current_time;
 
     if (msg.MsgType[0]==="text") {
@@ -142,6 +144,8 @@ exports.save_ticket_request = function(msg, res) {
         act_name=msg.EventKey[0].substr(basicInfo.WEIXIN_BOOK_HEADER.length);
     }
     
+    console.log("middle!");
+    
     verifyActivities(act_name, function(tl) {
     	if (tl == null){
     		res.send(template.getPlainTextTemplate(msg, "目前没有符合要求的活动处于抢票期。"));
@@ -151,13 +155,16 @@ exports.save_ticket_request = function(msg, res) {
     }, function(actID, staticACT) { // 可以对verifyActivities进行代码优化
 		weixin_id = msg.FromUserName[0];
 		current_time = (new Date()).getTime();
-
+		
+		console.log("before insert!");
+		
 		db[REQUEST_DB].insert({
 		    weixin_id : weixin_id,
 		    act_name : act_name,
 		    time : current_time,
 		    type: 0		// 0代表抢票，1代表退票成功
 		}, function(err, result) {
+			console.log("will send!!");
 		    res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后查看抢票结果(/▽＼)"));
 		});
     });
@@ -228,7 +235,7 @@ exports.faire_reinburse_ticket=function(msg,res)
 					time : current_time,
 					type: 1		// 0代表抢票，1代表退票成功
 				}, function(err, result) {
-					res.send(template.getPlainTextTemplate(msg,"退票成功"));
+					res.send(template.getPlainTextTemplate(msg,"退票成功。"));
 				});
             });
         });
