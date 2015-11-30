@@ -54,8 +54,6 @@ function HandleClick(table_cell) {
 }
 
 function RenderMap() {
-    
-
     if (activity.seat_map) {
         var i = 0;
         var j = 0;

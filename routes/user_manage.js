@@ -16,6 +16,7 @@ var deleteRoute = require("./user_manage_delete");
 var exportRoute = require("./user_manage_export");
 var detailRoute = require("./user_manage_detail");
 var publishRoute = require('./user_manage_publish');
+var seatModuleRoute = require('./user_manage_seatmodule');
 
 var ADMIN_DB = model.admins;
 var db = model.db;
@@ -39,5 +40,6 @@ router.use("/delete", deleteRoute);
 router.use("/export", exportRoute);
 router.use("/detail", detailRoute);
 router.use('/publish', publishRoute);
+router.use('/seatModule', seatModuleRoute);
 
 module.exports = router;
