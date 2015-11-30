@@ -26,16 +26,21 @@ var TICKET_DB = model.tickets;
 
 
 router.get('/', function(req, res) {
-  if (req.query.actid == undefined) {
-    res.send('缺少 actid 参数');
+  if (req.query.actids == undefined) {
+    res.send('缺少 actids 参数');
     return;
   }
 
   //var template = fs.readFileSync('../views/activity_detail_user.ejs', 'utf-8');
   //console.log(template);
   //var content = ejs.compile();
+  var act_ids = req.query.actids.split(',');
 
-  db[ACTIVITY_DB].find({ _id: getIDClass(req.query.actid ) }, function(err, docs) {
+  console.log(act_ids);
+
+  var main_act_id = act_ids[1];
+
+  db[ACTIVITY_DB].find({ _id: getIDClass( main_act_id ) }, function(err, docs) {
     if (err || docs.length === 0) {
       res.send('找不到要推送的活动');
     }

@@ -50,11 +50,13 @@
         <div class="panel-heading">
                 <a class="btn btn-default" href="/users/manage/detail">新增活动</a>
                 <a class="btn btn-default" href="/users/manage/checkinAll">检票（所有活动）</a>
+                <a class="btn btn-default" href="#" id="publish-checked">推送选中的活动</a>
         </div>
 
         <table class="table table-hover">
             <thead>
             <tr>
+                <th></th>
                 <th>状态</th>
                 <th>名称</th>
                 <th>简介</th>
@@ -101,9 +103,25 @@
     <script src="/lib/jq/jquery-1.10.2.min.js"></script>
     <script src="/lib/bs/js/bootstrap.min.js"></script>
     <script>
+        $(function() {
+            $('#publish-checked').click(function(event) {
+                var href = '/users/manage/publish?actids=';
+
+                var act_ids = Array.prototype.map.call($('.check-activity:checked'), function(ele) {
+                    return $(ele).parent().parent().attr('id');
+                });
+
+                href += act_ids.join(',');
+                $(this).attr('href', href);
+                eve.default();
+            });
+        });
+    </script>
+    <script>
         var activities = [
             <% for (var i = 0; i < activities1.length; i++) { %>
                 {
+                    'choose': '<input class="check-activity" type="checkbox">',
                     'status': <%= activities1[i].status %>,
                     'name': '<%= activities1[i].name %>',
                     'description': '<%= activities1[i].description %>',

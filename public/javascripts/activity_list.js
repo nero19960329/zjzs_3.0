@@ -102,9 +102,10 @@ function expand_long_text(dom) {
     par.html(newhtml);
 }
 
-var duringbook = new Array,beforeact = new Array, duringact = new Array;
+var duringbook = [], beforeact = [], duringact = [];
 
 var tdMap = {
+    'choose': 'choose',
     'status': 'status',
     'name': 'text',
     'description': 'longtext',
@@ -114,19 +115,15 @@ var tdMap = {
     'operations': 'operation_links',
     'delete': 'deletelink'
 }, operationMap = {
+    'choose': function(act) {
+        return true;
+    },
     'checkin': function(act) {
         var now = new Date();
-        if (act.status != 1 || (now <= act.book_start) || (now >= act.end_time)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(act.status != 1 || (now <= act.book_start) || (now >= act.end_time));
     },
     'export': function(act) {
-    	if (act.status == 0)
-    		return false;
-    	else
-        	return true;
+    	return act.status != 0;
     },
     'detail': function(act) {
         return true;
@@ -138,6 +135,7 @@ var tdMap = {
         return true;
     }
 }, tdActionMap = {
+    'choose': function(act, key) { return act[key]; },
     'status': function(act, key) {
         return getSmartStatus(act);
     },
