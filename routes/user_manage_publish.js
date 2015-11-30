@@ -41,25 +41,51 @@ router.get('/', function(req, res) {
     }
 
     var act_obj = docs[0];
+    var act_start_date = new Date(act_obj.start_time).toLocaleDateString();
+    var act_start_time = new Date(act_obj.start_time).toLocaleTimeString();
+    var act_end_date = new Date(act_obj.end_time).toLocaleDateString();
+    var act_end_time = new Date(act_obj.end_time).toLocaleTimeString();
+
+    act_start_time = act_start_time.substr(0, act_start_time.length - 3);
+    act_end_time = act_end_time.substr(0, act_end_time.length - 3);
+
+    var act_start_time_str = act_start_date + ' ' + act_start_time;
+    var act_end_time_str = (act_start_date === act_end_date)? act_end_time: act_end_date + ' ' + act_end_time;
+
+    var act_book_start_date = new Date(act_obj.book_start).toLocaleDateString();
+    var act_book_start_time = new Date(act_obj.book_start).toLocaleTimeString();
+    var act_book_end_date = new Date(act_obj.book_end).toLocaleDateString();
+    var act_book_end_time = new Date(act_obj.book_end).toLocaleTimeString();
+
+    act_book_start_time = act_book_start_time.substr(0, act_book_start_time.length - 3);
+    act_book_end_time = act_book_end_time.substr(0, act_book_end_time.length - 3);
+
+    var act_book_start_time_str = act_book_start_date + ' ' + act_book_start_time;
+    var act_book_end_time_str = (act_book_start_date === act_book_end_date)? act_book_end_time: act_book_end_date + ' ' + act_book_end_time;
 
     var actinfo = {
-      act_start: act_obj.start_time,
-      act_book_start: act_obj.book_start,
-      act_end: act_obj.end_time,
-      act_book_end: act_obj.book_end,
+      act_start_time_str: act_start_time_str,
+      act_end_time_str: act_end_time_str,
+      act_book_start_time_str: act_book_start_time_str,
+      act_book_end_time_str: act_book_end_time_str,
       current_time: (new Date()).getTime(),
       act_name: act_obj.name,
       seat_type: act_obj.need_seat,
-      act_desc: act_obj.description,
-      act_pic_url: act_obj.pic_url,
-      ticket_status: act_obj.status,
-      act_key: act_obj.key,
-      rem_tik: act_obj.remain_tickets,
-      act_place: act_obj.place,
-      isManager: false
+      act_desc: act_obj.description
+        .replace(/ /g,"&nbsp;")
+        .replace(/"/g,"&quot;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/\\n/g,"<br>"),
+      //act_pic_url: act_obj.pic_url,
+      //ticket_status: act_obj.status,
+      //act_key: act_obj.key,
+      //rem_tik: act_obj.remain_tickets,
+      act_place: act_obj.place
+      //isManager: false
     };
 
-    res.render('activity_detail_user', actinfo, function(err, html) {
+    res.render('activity_detail_user_news', actinfo, function(err, html) {
       if (err) {
         res.send('模板错误');
         console.error(err);
@@ -101,14 +127,14 @@ router.get('/', function(req, res) {
           }
 
           console.log(news_result);
-          api.massSendNews(news_result.media_id, { }, function(err, mass_result) {
+          api.previewNews('oa7m1t8aOmoGDoGRaULZeHii65RE', news_result.media_id, function(err, mass_result) {
             if (err) {
               res.send('图文消息推送失败');
               console.error(err);
               return;
             }
 
-            res.send('推送成功');
+            res.send('<html><head></head><body><h1>推送成功 三秒后返回</h1><script> window.onload = function() { setTimeout(function() { window.location = "/users/manage/list"; }, 3000); } </script></body></html>');
           });
         });
       });
