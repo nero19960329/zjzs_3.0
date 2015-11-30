@@ -148,12 +148,12 @@ describe('unit test', function () {
                             should(stubSpy.callCount).be.eql(1);
                             should(stubSpy.firstCall.returnValue).be.a.String.and.match(/您的抢票请求正在处理中，请稍后查看抢票结果/);
                             var ifFail = function (token, openid, errcode, act) {
-                        	should(errcode).be.eql(1);
-				done();
-			    };
-			    var ifSuccess = function (token, openid, ticketid, act) {
-				done("should not called");
-			    };
+                        		should(errcode).be.eql(1);
+								done();
+			    			};
+			    			var ifSuccess = function (token, openid, ticketid, act) {
+								done("should not called");
+			    			};
                             requestHandler.handleSingleActivity(ifSuccess, ifFail);
                         });
                     }
