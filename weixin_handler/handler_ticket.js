@@ -151,14 +151,14 @@ exports.save_ticket_request = function(msg, res) {
     }, function(actID, staticACT) { // 可以对verifyActivities进行代码优化
 		weixin_id = msg.FromUserName[0];
 		current_time = (new Date()).getTime();
-
+		
 		db[REQUEST_DB].insert({
 		    weixin_id : weixin_id,
 		    act_name : act_name,
 		    time : current_time,
 		    type: 0		// 0代表抢票，1代表退票成功
 		}, function(err, result) {
-		    res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，请稍后查看抢票结果(/▽＼)"));
+		    res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，稍后会通知抢票结果，请届时查看(/▽＼)"));
 		});
     });
 }
