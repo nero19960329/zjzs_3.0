@@ -72,7 +72,7 @@ router.post("/", function(req, res)
 					return;
 				}
 				else {
-					if (checkInformation(activity) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
+					if (checkInformation(activity, res) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
 						return;
 					}
 
@@ -131,7 +131,7 @@ router.post("/", function(req, res)
 				}
 				if (docs[0].status == 0) //修改暂存的活动
 				{
-					if (checkInformation(activity) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
+					if (checkInformation(activity, res) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
 						return;
 					}
 
@@ -500,7 +500,7 @@ router.get("/", function(req, res)
 });
 
 
-function checkInformation(activity) {
+function checkInformation(activity, res) {
 	if (!(activity["name"] && activity["key"] && activity["place"] && activity["description"] &&
 		activity["remain_tickets"] != undefined && activity["pic_url"] && activity["start_time"] &&
 		activity["end_time"] && activity["book_start"] && activity["book_end"] &&
