@@ -121,7 +121,14 @@ function transferTicketId(ticketid, year) {
 
 exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT) {
 	successData.data.keyword1.value = staticACT.name;
-    successData.data.keyword2.value = getTime(staticACT.start_time)+" ~ "+getTime(staticACT.end_time);
+    var starttime = getTime(staticACT.start_time);
+	var endtime = getTime(staticACT.end_time);
+	//省略同一天开始结束时间的年月日
+	if(starttime.substring(0, starttime.length - 5) === endtime.substring(0, endtime.length - 5))
+	{
+		endtime = endtime.substring(endtime.length - 5, endtime.length);
+	}
+	successData.data.keyword2.value = starttime + " ~ " + endtime;
     successData.data.keyword3.value = staticACT.place;
     successData.touser = openid;
     successData.data.keyword4.value = transferTicketId(ticketid, getTime(staticACT.start_time).substring(0, 4));
@@ -162,23 +169,25 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
 exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
 	failData.data.keyword1.value = staticACT.name;
     failData.touser = openid;
-    if (reason > 0){
-        failData.data.keyword2.value = errors[reason];
+    if (reason.errcode > 0){
+        failData.data.keyword2.value = errors[reason.errcode];
     }else{
         failData.data.keyword2.value = "由于以前的不良抢票记录，账号被冻结。";
     }
-    if(reason < 0) {
+    if(reason.errcode < 0) {
         failData.data.remark.value = "您的账号将于" + (-reason) + "次活动后被解禁。\n欢迎您继续关注后续抢票活动！";
         failData.url = "";
-    } else if(reason == 1) {
+    } else if(reason.errcode == 1) {
         failData.data.remark.value = "请先点击详情进入绑定页面进行绑定，再进行抢票操作。\n欢迎您继续关注后续抢票活动！";
         failData.url = urls.validateAddress+"?openid="+openid;
-    } else {
+    } else if(reason.errcode == 2) {
+        failData.data.remark.value = "\n点击本消息即可查看电子票详细信息。";
+        failData.url = urls.ticketInfo + "?ticketid=" + reason.ticketid;
+	} else {
         failData.data.remark.value = "\n欢迎您继续关注后续抢票活动！";
         failData.url = "";
     }
-    
-    if (reason == 2) {
+    if (reason.errcode == 2) {
     	failData.data.first.value = "";
     } else {
     	failData.data.first.value = "人无票而不愠，不亦君子乎？";
