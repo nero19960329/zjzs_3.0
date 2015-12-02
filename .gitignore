@@ -13,3 +13,4 @@ journal
 *.ns
 *.lock
 *.bson
+.idea/

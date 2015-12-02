@@ -16,6 +16,7 @@ var getIDClass = model.getIDClass;
 var ACTIVITY_DB = model.activities;
 var TICKET_DB = model.tickets;
 var SEAT_DB = model.seats;
+var SEATMODULE_DB = model.seat_modules;
 
 var seat_row_2 = 8;
 var seat_col_2 = 40;
@@ -71,7 +72,7 @@ router.post("/", function(req, res)
 					return;
 				}
 				else {
-					if (checkInformation(activity) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
+					if (checkInformation(activity, res) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
 						return;
 					}
 
@@ -130,7 +131,7 @@ router.post("/", function(req, res)
 				}
 				if (docs[0].status == 0) //修改暂存的活动
 				{
-					if (checkInformation(activity) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
+					if (checkInformation(activity, res) || checkPlace(activity, seatObj, res) || checkTime(activity, res)) {
 						return;
 					}
 
@@ -289,10 +290,45 @@ router.post("/", function(req, res)
 
 router.get("/", function(req, res)
 {
+	var defaultSeatMap = [
+		[0, 0, 0, 1, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
 	if (!req.query.actid)
 	{
 		var activity = {name: "新建活动"};
-		res.render("activity_detail", {activity:activity});
+
+		db[SEATMODULE_DB].find({}, {sort: {id: 1}}, function(err, docs) {
+			if (err) {
+				res.send("获取座位模板失败！");
+			}
+
+			if (docs.length == 0) {
+				db[SEATMODULE_DB].insert({
+					id: 0,
+					name: '默认模板',
+					seat_map: defaultSeatMap
+				}, function() {
+					activity.seat_module = JSON.stringify([{
+						id: 0,
+						name: '默认模板',
+						seat_map: defaultSeatMap
+					}]);
+					res.render("activity_detail", {activity: activity});
+				});
+			} else {
+				activity.seat_module = JSON.stringify(docs);
+				res.render("activity_detail", {activity: activity});
+			}
+		});
+
 		return;
 	}
 	else
@@ -420,9 +456,35 @@ router.get("/", function(req, res)
 							}
 							activity["seat_map"] = JSON.stringify(seatArray);
 							activity["price"] = act.price;
-							res.render("activity_detail", {activity:activity});
-							lock.release(SEAT_DB);
-							lock.release(ACTIVITY_DB);
+
+							db[SEATMODULE_DB].find({}, {sort: {id: 1}}, function(err, docs) {
+								if (err) {
+									res.send("获取座位模板失败！");
+								}
+
+								if (docs.length == 0) {
+									db[SEATMODULE_DB].insert({
+										id: 0,
+										name: '默认模板',
+										seat_map: defaultSeatMap
+									}, function() {
+										activity.seat_module = JSON.stringify([{
+											id: 0,
+											name: '默认模板',
+											seat_map: defaultSeatMap
+										}]);
+										res.render("activity_detail", {activity: activity});
+										lock.release(SEAT_DB);
+										lock.release(ACTIVITY_DB);
+									});
+								} else {
+									activity.seat_module = JSON.stringify(docs);
+									res.render("activity_detail", {activity: activity});
+									lock.release(SEAT_DB);
+									lock.release(ACTIVITY_DB);
+								}
+							});
+
 							return;
 						});
 					});
@@ -438,7 +500,7 @@ router.get("/", function(req, res)
 });
 
 
-function checkInformation(activity) {
+function checkInformation(activity, res) {
 	if (!(activity["name"] && activity["key"] && activity["place"] && activity["description"] &&
 		activity["remain_tickets"] != undefined && activity["pic_url"] && activity["start_time"] &&
 		activity["end_time"] && activity["book_start"] && activity["book_end"] &&

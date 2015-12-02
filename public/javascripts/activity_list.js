@@ -134,6 +134,9 @@ var tdMap = {
     },
     'preview': function(act) {
         return true;
+    },
+    'publish': function(act) {
+        return true;
     }
 }, tdActionMap = {
     'status': function(act, key) {
