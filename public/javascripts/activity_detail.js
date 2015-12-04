@@ -146,6 +146,7 @@ var dateInterfaceMap = {
 };
 
 var curstatus = 0;
+var seat_click = false;
 
 function updateActivity(nact) {
     var key, key2, tdate;
@@ -202,6 +203,7 @@ function initializeForm(activity) {
             $('td').height(seat_h);
 
             showSeatModuleNames(JSON.parse(activity.seat_module.replace(/&quot;/g, '"')));
+            displayOption(activity.now_seat_module);
         }
         else {
             $('#div-area_arrange').hide();
@@ -320,6 +322,14 @@ function checktime(){
         return false;
     }
     return true;
+}
+
+function checkSeatModule() {
+	if ($('#input-new_module').text() === '保存模板') {
+		setPopOver($('#input-new_module'), "请先保存您新建的模板");
+		return false;
+	}
+	return true;
 }
 
 function initialProgress(checked, ordered, total) {
@@ -618,6 +628,12 @@ function beforeSubmit(formData, jqForm, options) {
     //arrange seat
     if (d == 2) {
         if (! $('#input-need_seat').prop('disabled')) {
+        	formData.push({
+        		name: 'now_seat_module',
+        		required: false,
+        		type: 'string',
+        		value: $('#input-seat_module').find("option:selected").text()
+        	});
             formData.push({
                 name: 'seat_map',
                 required: false,
@@ -744,7 +760,7 @@ function submitComplete(xhr) {
 
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){
-        if(!checktime())
+        if(!checktime() || !checkSeatModule())
             return false;
         showProcessing();
         setResult('');
@@ -877,9 +893,8 @@ function newSeatModule() {
         seatModule.css('display', 'none');
         seatModuleNameInput.val('');
         seatModuleNameInput.css('display', 'inline');
-
-        activity.seat_map = activity.seat_module[0].seat_map;
-        RenderMap();
+        seat_click = true;
+    	$('#input-new_module').popover('destroy');
     } else {
     	var checkName_value = checkName(seatModuleNameInput.val());
         if (checkName_value != "") {
@@ -912,6 +927,7 @@ function newSeatModule() {
                     $('#input-modify_module').attr("disabled", false);
                     seatModule.css('display', 'inline');
                     seatModuleNameInput.css('display', 'none');
+                    seat_click = false;
 
                     seatModule.empty();
                     showSeatModuleNames(data.seat_maps);
@@ -967,6 +983,16 @@ function deleteSeatModule() {
     $('#seat_module-form').ajaxSubmit(options);
 }
 
+function copySeatMap(dst, src) {
+	var x = dst.seat_map.length;
+	for (var i = 0; i < x; ++i) {
+		var y = dst.seat_map[i].length;
+		for (var j = 0; j < y; ++j) {
+			dst.seat_map[i][j] = src.seat_map[i][j];
+		}
+	}
+}
+
 function seatModuleChange() {
     var seatModule = $('#input-seat_module');
     var name = seatModule.find("option:selected").text();
@@ -980,9 +1006,28 @@ function seatModuleChange() {
     var length = activity.seat_module.length;
     for (var i = 0; i < length; ++i) {
         if (name === activity.seat_module[i].name) {
-            activity.seat_map = activity.seat_module[i].seat_map;
+            copySeatMap(activity, activity.seat_module[i]);
             RenderMap();
             return;
         }
     }
+}
+
+function displayOption(str) {
+	debugger;
+	if (str === undefined) {
+		$('#input-seat_module').val(0);
+		return;
+	}
+
+	var options = $('#input-seat_module option');
+	var length = options.length;
+	for (var i = 0; i < length; ++i) {
+		if ($(options[i]).text() === str) {
+			$('#input-seat_module').val(i);
+			return;
+		}
+	}
+	
+	$('#input-seat_module').val(0);
 }
