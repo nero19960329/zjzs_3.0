@@ -24,7 +24,7 @@ function InitSeatRender() {
 
                 table.rows[i].cells[j].onmousedown = function(e) {
                     HandleClick(this);
-                }
+                };
             }
         }
     }
