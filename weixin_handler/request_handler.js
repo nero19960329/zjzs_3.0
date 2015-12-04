@@ -47,6 +47,7 @@ function generateUniqueCode(prefix,actKey)
     }
 }
 
+exports.handleSingleActivity = handleSingleActivity;
 function handleSingleActivity() {
 	run_times++;
 
@@ -107,7 +108,7 @@ function handleSingleActivity() {
             
             var openid = req.weixin_id;
             distributeTicket(openid, docs2[0], remain_tickets, function() {
-                handleSingleActivity();
+            	handleSingleActivity();
             });
         });
     }
@@ -124,27 +125,29 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     var name = staticACT.key;
     db[USER_DB].find({weixin_id:openid, status:1}, function(err3, docs3){
         if (err3){
-            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT);
-            callback();
+            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT, callback);
         }else if(docs3.length == 0){
             if(stu_cache[name].tikMap[openid] != true)
             {
                 stu_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 1}, staticACT);
+                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 1}, staticACT, callback);
             }
-            callback();
+            else{
+            	callback();
+            }
         }else if (docs3[0].punish > 0){
             if(stu_cache[name].tikMap[openid] != true)
             {
                 stu_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : -docs3[0].punish}, staticACT);
+                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : -docs3[0].punish}, staticACT, callback);
             }
-            callback();
+            else{
+            	callback();
+            }
         }else{
             db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id, status:1}, function(err4, docs4){
                 if (err4){
-                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT);
-                    callback();
+                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT, callback);
                 }else if (docs4.length == 0){
             		if (remain_tickets > 0){
                         remain_tickets--;
@@ -167,8 +170,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     		                    seat:       "",
     		                    cost:       price
     		                }, function(err101, count) {
-            					at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT);
-            					callback();
+            					at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT, callback);
             				});
                         });
                     }
@@ -177,17 +179,21 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
                         if(stu_cache[name].tikMap[openid] != true)
                         {
                             stu_cache[name].tikMap[openid] = true;
-				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 4}, staticACT);
+				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 4}, staticACT, callback);
                         }
-                        callback();
+						else{
+							callback();
+						}
             		}
                 }else{
                     if(stu_cache[name].tikMap[openid] != true)
                     {
                     	stu_cache[name].tikMap[openid] = true;
-                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 2, ticketid : docs4[0].unique_id}, staticACT);
+                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 2, ticketid : docs4[0].unique_id}, staticACT, callback);
                     }
-                    callback();
+				    else{
+				    	callback();
+				    }
                 }
             });
         }
