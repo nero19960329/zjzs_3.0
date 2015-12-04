@@ -124,26 +124,26 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     var name = staticACT.key;
     db[USER_DB].find({weixin_id:openid, status:1}, function(err3, docs3){
         if (err3){
-            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3, staticACT);
+            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT);
             callback();
         }else if(docs3.length == 0){
             if(stu_cache[name].tikMap[openid] != true)
             {
                 stu_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 1, staticACT);
+                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 1}, staticACT);
             }
             callback();
         }else if (docs3[0].punish > 0){
             if(stu_cache[name].tikMap[openid] != true)
             {
                 stu_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, -docs3[0].punish, staticACT);
+                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : -docs3[0].punish}, staticACT);
             }
             callback();
         }else{
             db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id, status:1}, function(err4, docs4){
                 if (err4){
-                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3, staticACT);
+                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT);
                     callback();
                 }else if (docs4.length == 0){
             		if (remain_tickets > 0){
@@ -177,7 +177,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
                         if(stu_cache[name].tikMap[openid] != true)
                         {
                             stu_cache[name].tikMap[openid] = true;
-				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 4, staticACT);
+				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 4}, staticACT);
                         }
                         callback();
             		}
@@ -185,7 +185,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
                     if(stu_cache[name].tikMap[openid] != true)
                     {
                     	stu_cache[name].tikMap[openid] = true;
-                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 2, staticACT);
+                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 2, ticketid : docs4[0].unique_id}, staticACT);
                     }
                     callback();
                 }

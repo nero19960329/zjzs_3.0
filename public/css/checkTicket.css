@@ -127,10 +127,10 @@ dd .title{
 /******************* 二维码视图  *********************
 ******************************************************/
 .blur {    
-    -webkit-filter: blur(1px); /* Chrome, Opera */
-       -moz-filter: blur(1px);
-        -ms-filter: blur(1px);    
-            filter: blur(1px);    
+    -webkit-filter: blur(10px); /* Chrome, Opera */
+       -moz-filter: blur(10px);
+        -ms-filter: blur(10px);    
+            filter: blur(10px);    
 }
 
 
