@@ -34,11 +34,11 @@ exports.getAccessToken = function getAccessToken(callback){
 	})
 }
 
-exports.getAccessTokenValue = function getAccessToken(callback, arg1, arg2, arg3){
+exports.getAccessTokenValue = function getAccessToken(callback, arg1, arg2, arg3, arg4){
     var now = new Date();
   
     if(AT_UPDATE_TIME != undefined && now.getYear() == AT_UPDATE_TIME.getYear() && now.getMonth() == AT_UPDATE_TIME.getMonth() && now.getDay() == AT_UPDATE_TIME.getDay() && (now.getHours() - AT_UPDATE_TIME.getHours()) <= 1){
-        callback(ACCESS_TOKEN, arg1, arg2, arg3);
+        callback(ACCESS_TOKEN, arg1, arg2, arg3, arg4);
     }
     else{
       var at_tmp = ACCESS_TOKEN;
@@ -59,7 +59,7 @@ exports.getAccessTokenValue = function getAccessToken(callback, arg1, arg2, arg3
 						db[TOKEN_DB].update({_id: docs[0]._id}, {$set : {token : ACCESS_TOKEN, time : AT_UPDATE_TIME}});
 					}
 				});
-                callback(ACCESS_TOKEN, arg1, arg2, arg3);
+                callback(ACCESS_TOKEN, arg1, arg2, arg3, arg4);
             });
         }).on('error', function(e) {
             console.error(e);

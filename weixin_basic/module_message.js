@@ -3,9 +3,6 @@
 //at.getAccessToken(module_message.sendModuleMessage);
 var urls = require("../address_configure");
 
-var fs = require('fs');
-var path = require('path');
-
 var http = require('https');
 var activityName = "";
 var activityTime = "";
@@ -119,7 +116,7 @@ function transferTicketId(ticketid, year) {
     return ticketIdTransferd;
 }
 
-exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT) {
+exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT, callback) {
 	successData.data.keyword1.value = staticACT.name;
     var starttime = getTime(staticACT.start_time);
 	var endtime = getTime(staticACT.end_time);
@@ -156,17 +153,13 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
         });
     }).on('error', function(e) {
 		console.error(e);
-		fs.appendFile('../module_message_error.log', 'error occured!\n');
-		for (var attr in e) {
-			fs.appendFile('../module_message_error.log', attr + ': ' + e[attr]);
-		}
-		fs.appendFile('../module_message_error.log', '\n');
     });
     req.write(tsuccessData);
     req.end();
+	callback();
 };
 
-exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
+exports.sendFailMessage = function (access_token, openid, reason, staticACT, callback) {
 	failData.data.keyword1.value = staticACT.name;
     failData.touser = openid;
     if (reason.errcode > 0){
@@ -214,20 +207,14 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT) {
             console.log(data);
         }).on('error', function (e) {
         	console.log(e);
-        	fs.appendFile('../module_message_error.log', 'error occured!\n');
-			for (var attr in e) {
-				fs.appendFile('../module_message_error.log', attr + ': ' + e[attr]);
-			}
-			fs.appendFile('../module_message_error.log', '\n');
         });
     }).on('error', function(e){
         console.error(e);
     });
-    console.log("prepare write");
     console.log(tfailData);
     console.log(req.write(tfailData));
-    console.log("write ok");
     req.end();
+	callback();
 };
 
 
