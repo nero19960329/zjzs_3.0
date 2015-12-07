@@ -38,7 +38,7 @@ function GetNeighbourChar(str, offset) {
 }
 
 function HandleClick(table_cell) {
-    if (activity.seat_map) {
+    if (activity.seat_map && seat_click) {
         var class_name = table_cell.className;
         var section = class_name.split(" ");
         var l = parseInt(section[1]);
@@ -50,6 +50,18 @@ function HandleClick(table_cell) {
             activity.seat_map[l][c] = 1;
         }
         RenderMap();
+    } else if (!seat_click) {
+    	$('#input-new_module').popover('destroy');
+		$('#input-new_module').popover({
+		    html: true,
+		    placement: 'top',
+		    title:'',
+		    content: '<span style="color:red;">请不要修改已经保存的模板，如果您想修改模板，请新建一个座位模板。</span>',
+		    trigger: 'focus',
+		    container: 'body',
+		    hide: 1000
+		});
+		$('#input-new_module').focus();
     }
 }
 

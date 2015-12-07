@@ -78,6 +78,7 @@ router.post("/", function(req, res)
 
 					if (activity["description"])
 						activity["description"] = activity["description"].replace(/\r?\n/g, "\\n");
+						
 					db[ACTIVITY_DB].insert(activity, function(){
 						if (activity["need_seat"] != 0)
 						{
@@ -303,7 +304,10 @@ router.get("/", function(req, res)
 
 	if (!req.query.actid)
 	{
-		var activity = {name: "新建活动"};
+		var activity = {
+			name: "新建活动",
+			now_seat_module: "默认模板"
+		};
 
 		db[SEATMODULE_DB].find({}, {sort: {id: 1}}, function(err, docs) {
 			if (err) {
@@ -386,7 +390,8 @@ router.get("/", function(req, res)
 						},
 						need_seat: act.need_seat,
 						status: act.status,
-						id: req.query.actid
+						id: req.query.actid,
+						now_seat_module: act.now_seat_module
 					};
 
 				if (activity.need_seat == 0){

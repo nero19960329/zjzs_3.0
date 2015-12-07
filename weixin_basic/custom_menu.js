@@ -29,6 +29,7 @@ function createMenu(access_token){
 	//console.log("createMenu's at: " + access_token);
     options_creatMenu.path = options_creatMenu.path + access_token;
 
+	console.log(options_creatMenu.path);
     var post = https.request(options_creatMenu, function (response) {
         response.on('data', function(d) {
             process.stdout.write(d);
@@ -36,6 +37,7 @@ function createMenu(access_token){
                 process.exit(0);
         });
     }).on('error', function(e) {
+    	console.log("menu error");
         console.error(e);
     });
     post.write(menuStr);
