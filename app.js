@@ -19,7 +19,7 @@ var chooarea = require('./routes/choose_area');
 var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
 var configure = require('./configure');
-//require('./weixin_handler/request_handler');
+var guardProcess = require('./guard_process.js');
 
 var app = express();
 
@@ -30,6 +30,7 @@ var db = model.db;
 
 db[TOKEN_DB].remove({});
 
+guardProcess.startRequestHandler();
 //exec('node ./weixin_handler/request_handler.js', function() {return;});
 
 process.on('uncaughtException', function(err)

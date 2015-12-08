@@ -37,7 +37,6 @@ function createMenu(access_token){
                 process.exit(0);
         });
     }).on('error', function(e) {
-    	console.log("menu error");
         console.error(e);
     });
     post.write(menuStr);
