@@ -9,6 +9,10 @@ var ACCESS_TOKEN;
 var AT_UPDATE_TIME;
 
 exports.getAccessToken = function getAccessToken(callback){
+	
+	if (process.env.NODE_ENV === 'test') {
+		callback("");
+	}
     var now = new Date();
 	db[TOKEN_DB].find({}, function(err, docs){
 		if(!err && docs.length > 0){
@@ -35,6 +39,9 @@ exports.getAccessToken = function getAccessToken(callback){
 }
 
 exports.getAccessTokenValue = function getAccessToken(callback, arg1, arg2, arg3, arg4){
+	if (process.env.NODE_ENV === 'test') {
+		callback("", arg1, arg2, arg3, arg4);
+	}
     var now = new Date();
   
     if(AT_UPDATE_TIME != undefined && now.getYear() == AT_UPDATE_TIME.getYear() && now.getMonth() == AT_UPDATE_TIME.getMonth() && now.getDay() == AT_UPDATE_TIME.getDay() && (now.getHours() - AT_UPDATE_TIME.getHours()) <= 1){

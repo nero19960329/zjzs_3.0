@@ -17,7 +17,12 @@ exports.requests = requests;
 exports.seat_modules = seat_modules;
 exports.accesstoken = accesstoken;
 
-exports.db = mongojs('mongodb://localhost/ticket', [tickets, activities, students, admins, seats, requests, seat_modules, accesstoken]);
+var dbUrl = 'mongodb://localhost/ticket';
+if (process.env.NODE_ENV === 'test') {
+    dbUrl = 'mongodb://localhost/test';
+}
+
+exports.db = mongojs(dbUrl, [tickets, activities, students, admins, seats, requests, seat_modules, accesstoken]);
 
 exports.getIDClass=function(idValue)
 {

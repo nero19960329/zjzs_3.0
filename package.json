@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "NODE_ENV=test istanbul cover node_modules/mocha/bin/_mocha -- --recursive && open ./coverage/lcov-report/index.html",
+    "test-ci": "NODE_ENV=test CI=true istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --recursive -t 10000"
   },
   "dependencies": {
     "body-parser": "~1.8.1",
@@ -13,16 +15,23 @@
     "excel-export": "~0.4.1",
     "express": "~4.9.0",
     "express-session": "~1.9.1",
-    "image-min": "^0.3.2",
     "moment": "~2.8.4",
     "mongodb": "~1.4.19",
     "mongojs": "~0.17.0",
     "morgan": "~1.3.0",
     "multer": "~0.1.6",
+    "proxyquire": "^1.5.0",
     "request": "2.48.0",
     "serve-favicon": "~2.1.3",
+    "sinon": "^1.14.1",
     "thunky": "~0.1.0",
-    "wechat-api": "^1.20.0",
     "xml2js": "~0.4.4"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.2",
+    "mocha": "^2.2.4",
+    "should": "^6.0.1",
+    "supertest": "^1.0.0",
+    "zombie": "^3.1.1"
   }
 }
