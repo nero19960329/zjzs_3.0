@@ -59,8 +59,6 @@ function handleSingleActivity() {
                 console.log('stu_cache: {}');
                 //300000 in use;1000 in test
                 time_2 = (new Date()).getTime();
-                //console.log("time: " + (time_2 - time_1));
-                //setTimeout(handleSingleActivity, 1000);
                 setTimeout(handleSingleActivity, 5000);
                 return -1;
             }
