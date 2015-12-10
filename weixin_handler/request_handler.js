@@ -56,11 +56,9 @@ function handleSingleActivity() {
             if (err || docs.length == 0) {
                 //nobody want this activity
                 stu_cache = {};
-                console.log('stu_cache: {}');
+                //console.log('stu_cache: {}');
                 //300000 in use;1000 in test
                 time_2 = (new Date()).getTime();
-                //console.log("time: " + (time_2 - time_1));
-                //setTimeout(handleSingleActivity, 1000);
                 setTimeout(handleSingleActivity, 5000);
                 return -1;
             }
@@ -93,10 +91,10 @@ function handleSingleActivity() {
             	stu_cache[name].tikMap = {};
             }
             
-            console.log('stu_cache: ');
-            for (var attr in stu_cache[name].tikMap) {
-            	console.log(attr + ': ' + stu_cache[name].tikMap[attr]);
-            }
+            //console.log('stu_cache: ');
+            //for (var attr in stu_cache[name].tikMap) {
+            //	console.log(attr + ': ' + stu_cache[name].tikMap[attr]);
+            //}
             
             remain_tickets = docs2[0].remain_tickets;
             if (req.type == 1){//退票成功
@@ -160,7 +158,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     		                if(staticACT.need_seat == 2){
     		                    price = parseInt(staticACT.price);
     		                }
-                            console.log("stu_id: " + stuID);
+                            //console.log("stu_id: " + stuID);
     		                db[TICKET_DB].insert(
     		                {
     		                    stu_id:     stuID,

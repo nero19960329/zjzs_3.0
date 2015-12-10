@@ -141,18 +141,15 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
         }
     };
 
-    //console.log(opt);
-
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
         	//process.stdout.write(data);
         	//console.log(tsuccessData);
         }).on('error', function (e) {
-        	console.log(e);
-        	
+        	//console.log(e);
         });
     }).on('error', function(e) {
-		console.error(e);
+		//console.error(e);
     });
     req.write(tsuccessData);
     req.end();
@@ -197,22 +194,19 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT, cal
         }
     };
 
-    //console.log(opt);
-
     var req = http.request(opt, function (res) {
         res.setEncoding('utf8');
         res.on('data', function (data) {
             //process.stdout.write(data);
             //console.log(tfailData);
-            console.log(data);
+            //console.log(data);
         }).on('error', function (e) {
-        	console.log(e);
+        	//console.log(e);
         });
     }).on('error', function(e){
-        console.error(e);
+        //console.error(e);
     });
-    console.log(tfailData);
-    console.log(req.write(tfailData));
+    req.write(tfailData);
     req.end();
 	callback();
 };
