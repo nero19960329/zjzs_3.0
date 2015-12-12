@@ -9,6 +9,7 @@ var fs = require('fs');
 var https = require('https');
 var wechat_api = require('wechat-api');
 var im = require('imagemagick');
+var resize = require('im-resize');
 var path = require('path');
 var set = require('../weixin_basic/settings');
 var token = require('../weixin_basic/access_token');
@@ -84,6 +85,10 @@ function upload(act_ids, i, res, callback) {
       var ext = path.extname(file_path);
       var file_min_path = file_path.substring(0, file_path.lastIndexOf(ext)) + '.min' + ext;
 
+      var image = {
+        path: file_path
+      };
+
       im.crop({
         srcPath: file_path,
         dstPath: file_min_path,
@@ -120,12 +125,20 @@ function upload(act_ids, i, res, callback) {
 }
 
 router.get('/', function(req, res) {
-  if (req.query.actids == undefined) {
-    res.send('缺少 actids 参数');
+  if (req.query.actids == undefined && req.query.actid == undefined) {
+    res.send('缺少 actids 或 actid 参数');
     return;
   }
 
-  var act_ids = req.query.actids.split(',');
+  var act_ids;
+
+  if (req.query.actids) {
+    act_ids = req.query.actids.split(',');
+  } else {
+    act_ids = [req.query.actid];
+  }
+
+
 
   news.articles.length = 0;
 
