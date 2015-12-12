@@ -6,7 +6,6 @@
 
 var express = require('express');
 var fs = require('fs');
-var https = require('https');
 var wechat_api = require('wechat-api');
 var im = require('imagemagick');
 var path = require('path');
