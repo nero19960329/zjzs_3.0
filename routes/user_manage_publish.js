@@ -9,7 +9,6 @@ var fs = require('fs');
 var https = require('https');
 var wechat_api = require('wechat-api');
 var im = require('imagemagick');
-var resize = require('im-resize');
 var path = require('path');
 var set = require('../weixin_basic/settings');
 var token = require('../weixin_basic/access_token');
@@ -104,7 +103,7 @@ function upload(act_ids, i, res, callback) {
 
         api.uploadMedia(file_min_path, 'thumb', function(err, thumb_result) {
           if (err) {
-            res.send('缩略图上传失败');
+            res.send('缩略图上传失败，图片过大');
             console.error(err);
             return;
           }
