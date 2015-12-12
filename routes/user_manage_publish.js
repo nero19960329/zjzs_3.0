@@ -8,7 +8,7 @@ var express = require('express');
 var fs = require('fs');
 var https = require('https');
 var wechat_api = require('wechat-api');
-var imagemin = require('image-min');
+var im = require('imagemagick');
 var path = require('path');
 var set = require('../weixin_basic/settings');
 var token = require('../weixin_basic/access_token');
@@ -80,27 +80,40 @@ function upload(act_ids, i, res, callback) {
 
     res.render('activity_detail_user_news', actinfo, function(err, html) {
       var file_path = path.join(__dirname.substring(0, __dirname.indexOf('route')), 'public', act_obj.pic_url.substr(act_obj.pic_url.indexOf('uploadpics')));
-      var file_src = fs.createReadStream(file_path);
-      //var ext = path.extname(file_src.path);
-      //var file_min_path = file_path.substring(0, file_path.lastIndexOf(ext)) + '.min' + ext;
-      //file_src.pipe(imagemin({ ext: ext })).pipe(fs.createWriteStream(file_min_path));
+      //var file_src = fs.createReadStream(file_path);
+      var ext = path.extname(file_path);
+      var file_min_path = file_path.substring(0, file_path.lastIndexOf(ext)) + '.min' + ext;
 
-      api.uploadMedia(file_path, 'thumb', function(err, thumb_result) {
-        if (err) {
-          res.send('缩略图上传失败');
+      im.crop({
+        srcPath: file_path,
+        dstPath: file_min_path,
+        width: 400,
+        height: 200,
+        quality: 0.5,
+        gravity: "North"
+      }, function(err) {
+        if (err || !fs.existsSync(file_min_path)) {
+          file_min_path = file_path;
           console.error(err);
-          return;
         }
 
-        news.articles.push({
-          thumb_media_id: thumb_result.thumb_media_id,
-          author: '清华大学紫荆之声',
-          title: act_obj.name,
-          content: html,
-          show_cover_pic: '1'
-        });
+        api.uploadMedia(file_min_path, 'thumb', function(err, thumb_result) {
+          if (err) {
+            res.send('缩略图上传失败');
+            console.error(err);
+            return;
+          }
 
-        upload(act_ids, i + 1, res, callback);
+          news.articles.push({
+            thumb_media_id: thumb_result.thumb_media_id,
+            author: '清华大学紫荆之声',
+            title: act_obj.name,
+            content: html,
+            show_cover_pic: '1'
+          });
+
+          upload(act_ids, i + 1, res, callback);
+        });
       });
     });
   });
@@ -126,6 +139,7 @@ router.get('/', function(req, res) {
 
       console.log(news_result);
       api.previewNews('oa7m1t8aOmoGDoGRaULZeHii65RE', news_result.media_id, function(err, mass_result) {
+      //api.massSendNews(news_result.media_id, true, function(err, mass_result) {
         if (err) {
           _res.send('图文消息推送失败');
           console.error(err);
