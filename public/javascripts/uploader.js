@@ -10,19 +10,25 @@ $(document).ready(function()
 	}
 	$('.div-resize_container').append(resizer);
 	$('#upfile').change(function(event) {
+        if (this.files.length != 0) {
+            resizer.okButton.css('display', 'block');
+        } else {
+            resizer.okButton.css('display', 'none');
+        }
 		var file = this.files[0];
 		resizer.resize(file, function(file) {
 			resizedImage = file;
-			debugger;
 		});
 	});
     $('#fileUploader').submit(function() {
-		debugger;
         var options = {
             dataType: 'json',
 			beforeSubmit: function(formData, jqForm, options) {
-				debugger;
-				//formData.append('file', resizedFile);
+				formData.push({
+                    name: 'blob', 
+                    required: false,
+                    value: resizedImage
+                });
 			},
             success: successRes,
             error: errorRes
@@ -85,6 +91,7 @@ function errorRes(data)
 
 function successRes(data)
 {
+    debugger;
     if (data.responseText=="Nothing")
     {
         errorRes();
