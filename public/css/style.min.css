@@ -467,7 +467,7 @@ input,select {
 }
 
 .ip {
-	background: url(../images/price.png) no-repeat;
+	/*background: url(../images/price.png) no-repeat;*/
 	position: relative;
 	margin: .5em .3em
 }

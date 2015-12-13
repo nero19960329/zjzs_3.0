@@ -1,8 +1,36 @@
 $(document).ready(function()
 {
+	var resizer = $.imageResizer();
+	var resizedImage;
+	if (!resizer) {
+		resizer = $(
+			"<p>Your browser doesn't support these feature:</p>" +
+			"<ul><li>canvas</li><li>Blob</li><li>Uint8Array</li><li>FormData</li><li>atob</li></ul>"
+		);
+	}
+	$('.div-resize_container').append(resizer);
+	$('#upfile').change(function(event) {
+        if (this.files.length != 0) {
+            resizer.okButton.css('display', 'block');
+            $('#uploadBtn').attr('disabled', true);
+        } else {
+            resizer.okButton.css('display', 'none');
+        }
+		var file = this.files[0];
+		resizer.resize(file, function(file) {
+			resizedImage = file;
+		});
+	});
     $('#fileUploader').submit(function() {
         var options = {
             dataType: 'json',
+			beforeSubmit: function(formData, jqForm, options) {
+				formData.push({
+                    name: 'blob', 
+                    required: false,
+                    value: resizedImage
+                });
+			},
             success: successRes,
             error: errorRes
         };
@@ -29,6 +57,17 @@ function showUploader()
     $("#errCosntent").text("");
 }
 
+function beforeSubmitResized(formData, jqForm, options) {
+	/*formData.push({
+		name: 'image',
+		required: false,
+		type: 'file',
+		value: resizedImage
+	});*/
+	debugger;
+	formData.append('file', resizedFile);
+}
+
 function errorRes(data)
 {
     if (data && data.status==200)
@@ -53,6 +92,7 @@ function errorRes(data)
 
 function successRes(data)
 {
+    debugger;
     if (data.responseText=="Nothing")
     {
         errorRes();

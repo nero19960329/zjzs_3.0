@@ -146,6 +146,7 @@ var dateInterfaceMap = {
 };
 
 var curstatus = 0;
+var seat_click = false;
 
 function updateActivity(nact) {
     var key, key2, tdate;
@@ -177,32 +178,39 @@ function initializeForm(activity) {
             $('#div-total_tickets').hide();
             $('#div-seat_arrange').hide();
             $('#div-price').hide();
+            $('#div-seatmap_module').hide();
         }
         else if (activity.need_seat == 0) {
             $('#div-area_arrange').hide();
             $('#div-total_tickets').show();
             $('#div-seat_arrange').hide();
             $('#div-price').hide();
+            $('#div-seatmap_module').hide();
         }
         else if (activity.need_seat == 2) {
             $('#div-area_arrange').hide();
             $('#div-total_tickets').hide();
             $('#div-seat_arrange').show();
             $('#div-price').show();
+            $('#div-seatmap_module').show();
             tb_Seat = $("#input-seat_arrange").width();
             seat = $("[class^=seat]");
             seat.width(tb_Seat/41);
             seat.height(seat.width());
             seat_w = seat.width();
             seat_h = seat.height();
-            
+
             $('td').height(seat_h);
+
+            showSeatModuleNames(JSON.parse(activity.seat_module.replace(/&quot;/g, '"')));
+            displayOption(activity.now_seat_module);
         }
         else {
             $('#div-area_arrange').hide();
             $('#div-total_tickets').hide();
             $('#div-seat_arrange').hide();
             $('#div-price').hide();
+            $('#div-seatmap_module').hide();
         }
     }
     if (!activity.id) {
@@ -223,6 +231,7 @@ function initializeForm(activity) {
         $('#input-book-start-minute').val(0);
         $('#input-book-end-minute').val(0);
         $('#input-seat_status').val(0);
+        showSeatModuleNames(JSON.parse(activity.seat_module.replace(/&quot;/g, '"')));
     }
     if (typeof activity.checked_tickets !== 'undefined') {
         initialProgress(activity.checked_tickets, activity.ordered_tickets, activity.total_tickets);
@@ -313,6 +322,14 @@ function checktime(){
         return false;
     }
     return true;
+}
+
+function checkSeatModule() {
+	if ($('#input-new_module').text() === '保存模板') {
+		setPopOver($('#input-new_module'), "请先保存您新建的模板");
+		return false;
+	}
+	return true;
 }
 
 function initialProgress(checked, ordered, total) {
@@ -611,6 +628,12 @@ function beforeSubmit(formData, jqForm, options) {
     //arrange seat
     if (d == 2) {
         if (! $('#input-need_seat').prop('disabled')) {
+        	formData.push({
+        		name: 'now_seat_module',
+        		required: false,
+        		type: 'string',
+        		value: $('#input-seat_module').find("option:selected").text()
+        	});
             formData.push({
                 name: 'seat_map',
                 required: false,
@@ -632,7 +655,7 @@ function beforeSubmit(formData, jqForm, options) {
                 console.log(formData[x].name);
             }
         }
-        
+
     }
     if (lackArray.length > 0) {
         var d = $('#resultHolder');
@@ -737,7 +760,7 @@ function submitComplete(xhr) {
 
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){
-        if(!checktime())
+        if(!checktime() || !checkSeatModule())
             return false;
         showProcessing();
         setResult('');
@@ -778,6 +801,17 @@ $('#activity-form').submit(function() {
 
 $('.form-control').on('focus', function() {var me = $(this); setTimeout(function(){me.select();}, 100)});
 
+function showSeatModuleNames(arg) {
+    //activity.seat_module = JSON.parse(activity.seat_module.replace(/&quot;/g, '"'));
+    activity.seat_module = arg;
+
+    var length = activity.seat_module.length;
+    var seat_module_select = $('#input-seat_module');
+    for (var i = 0; i < length; ++i) {
+        var tmpOption = $('<option value="' + i + '">' + activity.seat_module[i].name + '</option>');
+        seat_module_select.append(tmpOption);
+    }
+}
 
 function inputNeedSeatChange(){
     var d=document.getElementById("input-need_seat").value;
@@ -786,25 +820,28 @@ function inputNeedSeatChange(){
         $('#div-total_tickets').hide();
         $('#div-seat_arrange').hide();
         $('#div-price').hide();
+        $('#div-seatmap_module').hide();
     }
     else if (d == 0) {
         $('#div-area_arrange').hide();
         $('#div-total_tickets').show();
         $('#div-seat_arrange').hide();
         $('#div-price').hide();
+        $('#div-seatmap_module').hide();
     }
     else if (d == 2) {
         $('#div-area_arrange').hide();
         $('#div-total_tickets').hide();
         $('#div-seat_arrange').show();
         $('#div-price').show();
+        $('#div-seatmap_module').show();
         tb_Seat = $("#input-seat_arrange").width();
         seat = $("[class^=seat]");
         seat.width(tb_Seat/41);
         seat.height(seat.width());
         seat_w = seat.width();
         seat_h = seat.height();
-        
+
         $('td').height(seat_h);
     }
     else {
@@ -812,5 +849,180 @@ function inputNeedSeatChange(){
         $('#div-total_tickets').hide();
         $('#div-seat_arrange').hide();
         $('#div-price').hide();
+        $('#div-seatmap_module').hide();
     }
+}
+
+function setPopOver(obj, str) {
+	obj.popover('destroy');
+    obj.popover({
+        html: true,
+        placement: 'top',
+        title:'',
+        content: '<span style="color:red;">' + str + '</span>',
+        trigger: 'focus',
+        container: 'body',
+        hide: 1000
+    });
+    obj.focus();
+}
+
+function checkName(str) {
+	var length = str.length;
+	if (length >= 10) {
+		return "模板名称过长，长度应小于等于10";
+	} else if (str === "") {
+		return "您必须输入一个模板名称";
+	} else {
+		for (var i = 0; i < length; ++i) {
+			if (str[i] != ' ') {
+				return "";
+			}
+		}
+		return "模板名称不能都是空格";
+	}
+}
+
+function newSeatModule() {
+    var thisButton =  $('#input-new_module');
+    var seatModule = $('#input-seat_module');
+    var seatModuleNameInput = $('#input-seat_module_name');
+    if (thisButton.text() === '新建模板') {
+        thisButton.text('保存模板');
+        $('#input-modify_module').attr("disabled", true);
+        seatModule.css('display', 'none');
+        seatModuleNameInput.val('');
+        seatModuleNameInput.css('display', 'inline');
+        seat_click = true;
+    	$('#input-new_module').popover('destroy');
+    } else {
+    	var checkName_value = checkName(seatModuleNameInput.val());
+        if (checkName_value != "") {
+            setPopOver(seatModuleNameInput, checkName_value);
+            return;
+        }
+
+        var options = {
+            dataType: 'json',
+            beforeSubmit: function(formData, jqForm, options) {
+                formData.push({
+                    name: 'name',
+                    required: false,
+                    type: 'string',
+                    value: seatModuleNameInput.val()
+                });
+                formData.push({
+                    name: 'seat_map',
+                    required: false,
+                    type: 'string',
+                    value: JSON.stringify(activity.seat_map)
+                });
+            },
+            success: function(data) {
+                if (data.status === "error") {
+                    setPopOver(seatModuleNameInput, "已经拥有相同名称的模板，请修改！");
+                } else {
+                    thisButton.text('新建模板');
+                    $('#input-modify_module').attr("disabled", false);
+                    seatModule.css('display', 'inline');
+                    seatModuleNameInput.css('display', 'none');
+                    seat_click = false;
+
+                    seatModule.empty();
+                    showSeatModuleNames(data.seat_maps);
+                    activity.seat_module = data.seat_maps;
+
+					var length = activity.seat_module.length;
+                    copySeatMap(activity, activity.seat_module[length - 1]);
+                    seatModule.val(length - 1);
+                    RenderMap();
+                }
+            },
+            error: function(xhr) {
+                setPopOver(seatMouleNameInput, "新建模板失败！");
+            },
+            complete: function(xhr) {
+
+            }
+        };
+        $('#seat_module-form').ajaxSubmit(options);
+    }
+}
+
+function deleteSeatModule() {
+    var seatModule = $('#input-seat_module');
+    var options = {
+        dataType: 'json',
+        beforeSubmit: function(formData, jqForm, options) {
+            formData.push({
+                name: 'name',
+                required: false,
+                type: 'string',
+                value: seatModule.find("option:selected").text()
+            });
+        },
+        success: function(data) {
+            seatModule.empty();
+            showSeatModuleNames(data.seat_maps);
+            activity.seat_module = data.seat_maps;
+            $('#input-modify_module').attr("disabled", true);
+            copySeatMap(activity, activity.seat_module[0]);
+            RenderMap();
+        },
+        error: function(xhr) {
+            console.log('error!');
+        },
+        complete: function(xhr) {
+            seatModule.val(0);
+        }
+    };
+    $('#seat_module-form').ajaxSubmit(options);
+}
+
+function copySeatMap(dst, src) {
+	var x = dst.seat_map.length;
+	for (var i = 0; i < x; ++i) {
+		var y = dst.seat_map[i].length;
+		for (var j = 0; j < y; ++j) {
+			dst.seat_map[i][j] = src.seat_map[i][j];
+		}
+	}
+}
+
+function seatModuleChange() {
+    var seatModule = $('#input-seat_module');
+    var name = seatModule.find("option:selected").text();
+
+    if (name === "默认模板") {
+        $('#input-modify_module').attr("disabled", true);
+    } else {
+        $('#input-modify_module').attr("disabled", false);
+    }
+    var length = activity.seat_module.length;
+    for (var i = 0; i < length; ++i) {
+        if (name === activity.seat_module[i].name) {
+            copySeatMap(activity, activity.seat_module[i]);
+            RenderMap();
+            return;
+        }
+    }
+}
+
+function displayOption(str) {
+	debugger;
+	if (str === undefined) {
+		$('#input-seat_module').val(0);
+		return;
+	}
+
+	var options = $('#input-seat_module option');
+	var length = options.length;
+	for (var i = 0; i < length; ++i) {
+		if ($(options[i]).text() === str) {
+			$('#input-seat_module').val(i);
+			return;
+		}
+	}
+
+	$('#input-seat_module').val(0);
 }

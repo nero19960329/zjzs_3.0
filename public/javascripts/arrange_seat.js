@@ -17,7 +17,12 @@ function InitSeatRender() {
     if (table != null) {
         for (i = 0; i < table.rows.length; i ++) {
             for (j = 0; j < table.rows[i].cells.length; j ++) {
-                table.rows[i].cells[j].onclick = function () {
+                table.rows[i].cells[j].onmouseover = function (e) {
+                    if (e.which === 1)
+                        HandleClick(this);
+                };
+
+                table.rows[i].cells[j].onmousedown = function(e) {
                     HandleClick(this);
                 };
             }
@@ -33,7 +38,7 @@ function GetNeighbourChar(str, offset) {
 }
 
 function HandleClick(table_cell) {
-    if (activity.seat_map) {
+    if (activity.seat_map && seat_click) {
         var class_name = table_cell.className;
         var section = class_name.split(" ");
         var l = parseInt(section[1]);
@@ -45,12 +50,22 @@ function HandleClick(table_cell) {
             activity.seat_map[l][c] = 1;
         }
         RenderMap();
+    } else if (!seat_click) {
+    	$('#input-new_module').popover('destroy');
+		$('#input-new_module').popover({
+		    html: true,
+		    placement: 'top',
+		    title:'',
+		    content: '<span style="color:red;">请不要修改已经保存的模板，如果您想修改模板，请新建一个座位模板。</span>',
+		    trigger: 'focus',
+		    container: 'body',
+		    hide: 1000
+		});
+		$('#input-new_module').focus();
     }
 }
 
 function RenderMap() {
-    
-
     if (activity.seat_map) {
         var i = 0;
         var j = 0;

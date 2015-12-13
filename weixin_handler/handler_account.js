@@ -26,6 +26,7 @@ exports.check_bind_accout=function(msg)
 }
 function sendBindInfo(msg,res,openID)
 {
+    console.log(openID);
     res.send(
         template.getPlainTextTemplate(msg,"请在绑定页面输入学生卡号以及校园账户密码以验证身份。\n"
             + template.getHyperLink("打开绑定页面",urls.validateAddress+"?openid="+openID))
@@ -60,6 +61,11 @@ exports.faire_unbind_accout=function(msg,res)
         res.send(template.getPlainTextTemplate(msg,"该账号尚未绑定。"));
     },function()
     {
+		/*if (checker.checkMenuClick(msg)===basicInfo.WEIXIN_EVENT_KEYS['account_unbind']) {
+			res.send(template.getPlainTextTemplate(msg, "请您输入框输入“解绑”以确认解除绑定。"));
+			return;
+		}*/
+
         lock.acquire(USER_DB,function()
         {
             db[USER_DB].update({weixin_id:openID,status:1},

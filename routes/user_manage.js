@@ -6,6 +6,7 @@ var model = require('../models/models');
 var lock = require('../models/lock');
 var urls = require("../address_configure");
 var checkin = require('./checkin');
+var checkinAll = require('./checkinAll');
 var cm = require("../weixin_basic/custom_menu");
 var act_info = require('../weixin_basic/activity_info');
 var cache = require("../weixin_handler/handler_ticket");
@@ -14,6 +15,8 @@ var listRoute = require("./user_manage_list");
 var deleteRoute = require("./user_manage_delete");
 var exportRoute = require("./user_manage_export");
 var detailRoute = require("./user_manage_detail");
+var publishRoute = require('./user_manage_publish');
+var seatModuleRoute = require('./user_manage_seatmodule');
 
 var ADMIN_DB = model.admins;
 var db = model.db;
@@ -30,10 +33,13 @@ router.get("/", function(req, res)
 	res.redirect("/users/manage/list");
 });
 
+router.use("/checkinAll",checkinAll);
 router.use("/checkin",checkin);
 router.use("/list", listRoute);
 router.use("/delete", deleteRoute);
 router.use("/export", exportRoute);
 router.use("/detail", detailRoute);
+router.use('/publish', publishRoute);
+router.use('/seatModule', seatModuleRoute);
 
 module.exports = router;

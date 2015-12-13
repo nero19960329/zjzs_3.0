@@ -53,3 +53,54 @@
     color: red;
     font-size: 20px;
 }
+
+.div-container {
+	width: 300px;
+}
+
+.div-resizer {
+	overflow: hidden;
+}
+
+.div-resizer.have-img button .btn-resizer_ok {
+	display: inline-block;
+}
+
+.div-resizer.have-img .div-inner {
+	display: block;
+}
+
+.div-inner {
+	font-size: 0;
+	overflow: hidden;
+	display: none;
+}
+
+.div-frames_container {
+	position: absolute;
+	overflow: hidden;
+	top: 0;
+	left: 0;
+}
+
+.div-frames_container .div-frames {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 1px solid black;
+	cursor: move;
+	outline: rgba(0, 0, 0, 0.6) solid 10000px;
+}
+
+button .btn-resizer_ok {
+	float: right;
+	margin-left: 5px;
+	display: none;
+}
+
+canvas {
+	position: absolute;
+	max-width: 100%;
+	margin: auto;
+	display: block;
+}

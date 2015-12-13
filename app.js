@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var exec = require('child_process').exec;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -17,8 +18,20 @@ var chooseat = require('./routes/choose_seat');
 var chooarea = require('./routes/choose_area');
 var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
+var configure = require('./configure');
+var guardProcess = require('./guard_process.js');
 
 var app = express();
+
+var model = require('./models/models');
+
+var TOKEN_DB = model.accesstoken;
+var db = model.db;
+
+db[TOKEN_DB].remove({});
+
+//guardProcess.startRequestHandler();
+exec('node ./weixin_handler/request_handler.js', function() {return;});
 
 process.on('uncaughtException', function(err)
 {
@@ -37,7 +50,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret: 'Bingo Lingo!', saveUninitialized: false, resave: false}));
+app.use(session({secret: configure.session_secret, saveUninitialized: false, resave: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/weixin', weixin);

@@ -6,7 +6,8 @@
  */
 
 function clearActs() {
-    $('#tbody-activities').html('');
+    //$('#tbody-activities').html('');
+    $('#tbody-activities').text('');
 }
 
 function getSmartStatus(act) {
@@ -132,6 +133,9 @@ var tdMap = {
         return true;
     },
     'preview': function(act) {
+        return true;
+    },
+    'publish': function(act) {
         return true;
     }
 }, tdActionMap = {

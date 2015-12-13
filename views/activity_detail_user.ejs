@@ -7,9 +7,9 @@
     <meta content="telephone=no" name="format-detection">
     <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=no">
     <title></title>
-    <link rel="stylesheet" href="css/style.min.css">
-    <link type="text/css" href="css/style_zbw.css" rel="stylesheet">
-    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="/css/style.min.css">
+    <link type="text/css" href="/css/style_zbw.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript">
         window.onerror = function() {
             return true;
@@ -43,7 +43,7 @@
                         <p class="time" id="small_title">Tsinghua University</p>
                         <h1 id="activity_title"></h1>
                         <div class="bars">
-                            <img src="img/clock.png" id="clock_image">
+                            <img src="/img/clock.png" id="clock_image">
                             <span id="ticket_getting"></span>
                         </div>
                     </figcaption>
@@ -95,7 +95,7 @@
     var activity_title="<%= act_name %>";//活动名称
     var activity_seat_type="<%= seat_type %>";//0:不选座 1:选区 2:选座
     var activity_detail_title="活动介绍";//可以填"演出详情"、"活动详情"等
-    var activity_content="<%- act_desc %>";
+    var activity_content="<%= act_desc %>";
     var activity_main_image="<%= act_pic_url %>";//必须是竖着的图片
     var activity_title_image="<%= act_pic_url %>";//最好是横着的图片
     var activity_ticket_status=<%= ticket_status %>;//0:未开始抢票 1:抢票中 2:抢票结束 3:抢票成功，点击查看 4:已领票
@@ -107,8 +107,8 @@
 /**/
 
 </script>
-<script type="text/javascript" src="js/activity_detail_time.js"></script>
-<script type="text/javascript" src="js/activity_detail_extra.js"></script>
-<script type="text/javascript" src="js/activity_detail_add.js"></script>
+<script type="text/javascript" src="/js/activity_detail_time.js"></script>
+<script type="text/javascript" src="/js/activity_detail_extra.js"></script>
+<script type="text/javascript" src="/js/activity_detail_add.js"></script>
 </body>
 </html>

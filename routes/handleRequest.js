@@ -60,20 +60,8 @@ function generateUniqueCode(prefix,actKey)
     }
 }
 
-exports.handleSingleActivity = function (name){
-	var res = 0;
-	console.log("123123");
-	db[ACTIVITY_DB].find({}, function(err, docs) {
-		console.log("res: " + res);
-		res = 1;
-		console.log("gai le !");
-	});
-	while(res == 0) {
-		//console.log("boom!!");
-	}
-	console.log("no!");
-	return res;
-	/*db[REQUEST_DB].find({act_name:name}, {sort:{time:1}}, function(err, docs){
+exports.handleSingleActivity = function (){
+	db[REQUEST_DB].find({}, function(err, docs){
 		console.log("length: " + docs.length);
 		if (err || docs.length==0) {
 			//nobody want this activity
@@ -84,6 +72,7 @@ exports.handleSingleActivity = function (name){
 		var activityTime = "";
 		var activityPos = "";
         var activity_id = 0;
+        var name = doc[0].act_name;
         db[ACTIVITY_DB].find({key:name}, function(err2, docs2){
 			if (err2 || docs2.length==0) {
 				//no activity
@@ -99,21 +88,13 @@ exports.handleSingleActivity = function (name){
 	        activityPos = docs2[0].place;
             activity_id = docs2[0]._id;
 	        moduleMsg.setActivityInfo(activityName, activityTime, activityPos);
-
             var len = docs.length;
             console.log("len: "+len);
-            for (var i = 0; i < len; i++){
-                //sorted by time
-                var openid = docs[i].weixin_id;
-                var res = distributeTicket(openid, docs2[0], remain_tickets);
-                if(res == 0){
-                    remain_tickets--;
-                }
-                db[REQUEST_DB].remove({_id:docs[i]._id});
-            }
-            db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
+            var openid = docs[0].weixin_id;
+            distributeTicket(openid, docs2[0], remain_tickets);
+            db[REQUEST_DB].remove({_id:docs[i]._id});
 		});
-	});*/
+	});
 }
 
 //return errnum 0:avaliable 1: 2: 3: ...
@@ -124,13 +105,10 @@ exports.handleSingleActivity = function (name){
 // 3 : db errors
 // 4 : no more ticket
 function distributeTicket(openid, staticACT, remain_tickets){
-    var res = 10000;
     db[USER_DB].find({weixin_id:openid}, function(err3, docs3){
         if (err3){
-            res = 3;
             at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3);
         }else if(docs3.length == 0){
-            res = 1;
             at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 1);
         }else if (docs3[0].punish > 0){
             res = --docs3[0].punish;
@@ -138,40 +116,37 @@ function distributeTicket(openid, staticACT, remain_tickets){
         }else{
             db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id}, function(err4, docs4){
                 if (err4){
-                    res = 3;
                     at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 3);
                 }else if (docs4.length == 0){
-                    if(remain_tickets <= 0){
-                        res = 4;
-                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 4);
-                    }
-                    else{
-                        res = 0;
-                        var stuID = docs3[0].stu_id;
-                        var ss = staticACT._id.toString();
-                        var tiCode = generateUniqueCode(ss.substr(0,8)+ss.substr(14),staticACT.key);
-                        var price = 0;
-                        if(staticACT.need_seat == 2){
-                            price = parseInt(staticACT.price);
-                        }
-                    }
-                    db[TICKET_DB].insert(
-                    {
-                        stu_id:     stuID,
-                        unique_id:  tiCode,
-                        activity:   staticACT._id,
-                        status:     1,
-                        seat:       "",
-                        cost:       price
-                    });
-                    at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode);
+            		if (remain_tickets > 0){
+		                var stuID = docs3[0].stu_id;
+		                var ss = staticACT._id.toString();
+		                var tiCode = generateUniqueCode(ss.substr(0,8)+ss.substr(14),staticACT.key);
+		                var price = 0;
+		                if(staticACT.need_seat == 2){
+		                    price = parseInt(staticACT.price);
+		                }
+		                db[TICKET_DB].insert(
+		                {
+		                    stu_id:     stuID,
+		                    unique_id:  tiCode,
+		                    activity:   staticACT._id,
+		                    status:     1,
+		                    seat:       "",
+		                    cost:       price
+		                });
+		                at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode);
+                    	remain_tickets--;
+            			db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
+            		}
+            		else{
+				        // no more tickets
+				        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 4);
+            		}
                 }else{
-                    res = 2;
                     at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, 2);
                 }
             });
         }
     });
-    while(res == 10000);
-    return res;
 }
