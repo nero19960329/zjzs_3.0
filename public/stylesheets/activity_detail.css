@@ -62,27 +62,28 @@
 	overflow: hidden;
 }
 
-.div-resizer .have-img button .btn-resizer_ok {
+.div-resizer.have-img button .btn-resizer_ok {
 	display: inline-block;
 }
 
-.div-resizer .have-img .div-inner {
+.div-resizer.have-img .div-inner {
 	display: block;
 }
 
 .div-inner {
-	width: 100%;
-	position: relative;
 	font-size: 0;
 	overflow: hidden;
 	display: none;
 }
 
-.div-inner img {
-	width: 100%;
+.div-frames_container {
+	position: absolute;
+	overflow: hidden;
+	top: 0;
+	left: 0;
 }
 
-.div-frames {
+.div-frames_container .div-frames {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -98,6 +99,7 @@ button .btn-resizer_ok {
 }
 
 canvas {
+	position: absolute;
 	max-width: 100%;
 	margin: auto;
 	display: block;

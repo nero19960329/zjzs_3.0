@@ -4,10 +4,14 @@ var urls = require("../address_configure");
 
 var router = express.Router();
 
-router.use(multer({ dest: './public/uploadpics/'}));
+router.use(multer({ dest: './public/uploadpics/' }));
 
 router.post('/', function(req, res)
 {
+    for (var attr in req.files) {
+        console.log(attr);
+    }
+
     var thefile=req.files.upfile;
     if (thefile==null)
     {
