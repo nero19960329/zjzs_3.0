@@ -61,20 +61,19 @@ function generateUniqueCode(prefix,actKey)
 }
 
 exports.handleSingleActivity = function (name){
-	/*var res = 0;
-	console.log(name);
+	var res = 0;
 	console.log("123123");
-	db[REQUEST_DB].find({"test": "test"}, function(err, docs) {
-		console.log("err: " + err);
-		console.log("length: " + docs.length);
-		var tmp = 0;
-		while (tmp < 1) {
-			tmp++;		
-		}
+	db[ACTIVITY_DB].find({}, function(err, docs) {
+		console.log("res: " + res);
 		res = 1;
+		console.log("gai le !");
 	});
-	return res;*/
-	db[REQUEST_DB].find({act_name:name}, {sort:{time:1}}, function(err, docs){
+	while(res == 0) {
+		//console.log("boom!!");
+	}
+	console.log("no!");
+	return res;
+	/*db[REQUEST_DB].find({act_name:name}, {sort:{time:1}}, function(err, docs){
 		console.log("length: " + docs.length);
 		if (err || docs.length==0) {
 			//nobody want this activity
@@ -114,7 +113,7 @@ exports.handleSingleActivity = function (name){
             }
             db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
 		});
-	});
+	});*/
 }
 
 //return errnum 0:avaliable 1: 2: 3: ...

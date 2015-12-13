@@ -13,7 +13,7 @@ var currentTime = (new Date()).getTime();
 
 db[ACTIVITY_DB].find({book_start: {$lte: currentTime}, book_end: {$gte: currentTime}}, function(err, docs) {
 	if (err || docs.length == 0) {
-		process.exit(0)
+		process.exit(0);
 	}
 	
 	var length = docs.length;
