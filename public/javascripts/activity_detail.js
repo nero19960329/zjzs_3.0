@@ -199,7 +199,7 @@ function initializeForm(activity) {
             seat.height(seat.width());
             seat_w = seat.width();
             seat_h = seat.height();
-            
+
             $('td').height(seat_h);
 
             showSeatModuleNames(JSON.parse(activity.seat_module.replace(/&quot;/g, '"')));
@@ -655,7 +655,7 @@ function beforeSubmit(formData, jqForm, options) {
                 console.log(formData[x].name);
             }
         }
-        
+
     }
     if (lackArray.length > 0) {
         var d = $('#resultHolder');
@@ -841,7 +841,7 @@ function inputNeedSeatChange(){
         seat.height(seat.width());
         seat_w = seat.width();
         seat_h = seat.height();
-        
+
         $('td').height(seat_h);
     }
     else {
@@ -919,7 +919,6 @@ function newSeatModule() {
                 });
             },
             success: function(data) {
-                console.log('success!');
                 if (data.status === "error") {
                     setPopOver(seatModuleNameInput, "已经拥有相同名称的模板，请修改！");
                 } else {
@@ -932,7 +931,7 @@ function newSeatModule() {
                     seatModule.empty();
                     showSeatModuleNames(data.seat_maps);
                     activity.seat_module = data.seat_maps;
-					
+
 					var length = activity.seat_module.length;
                     activity.seat_map = activity.seat_module[length - 1].seat_map;
                     seatModule.val(length - 1);
@@ -940,11 +939,10 @@ function newSeatModule() {
                 }
             },
             error: function(xhr) {
-                console.log('error!');
                 setPopOver(seatMouleNameInput, "新建模板失败！");
             },
             complete: function(xhr) {
-                console.log('complete!');
+
             }
         };
         $('#seat_module-form').ajaxSubmit(options);
@@ -964,7 +962,6 @@ function deleteSeatModule() {
             });
         },
         success: function(data) {
-            console.log('success!');
             seatModule.empty();
             showSeatModuleNames(data.seat_maps);
             activity.seat_module = data.seat_maps;
@@ -976,7 +973,6 @@ function deleteSeatModule() {
             console.log('error!');
         },
         complete: function(xhr) {
-            console.log('complete!');
             seatModule.val(0);
         }
     };
@@ -1028,6 +1024,6 @@ function displayOption(str) {
 			return;
 		}
 	}
-	
+
 	$('#input-seat_module').val(0);
 }

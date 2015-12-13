@@ -7,7 +7,6 @@ var db = model.db;
 var SEATMODULE_DB = model.seat_modules;
 
 router.post("/", function(req, res) {
-	console.log(req.body.name);
 	if (req.body.seat_map != undefined) { // 添加模板
 		db[SEATMODULE_DB].find({
 			name: req.body.name
@@ -35,7 +34,6 @@ router.post("/", function(req, res) {
 			});
 		})
 	} else { // 删除模板
-		console.log("delete");
 		db[SEATMODULE_DB].remove({
 			name: req.body.name
 		}, function() {
