@@ -4,8 +4,11 @@ var wxhandler = require('../weixin_handler/handler_main');
 var router = express.Router();
 
 router.use('/', function(req, res, next) {
-    if (verifier.check_weixin_signature(req.query.signature,req.query.timestamp,req.query.nonce))
-    //if (true)
+	
+	if (process.env.NODE_ENV === 'test') {
+		next();
+	}
+    else if (verifier.check_weixin_signature(req.query.signature,req.query.timestamp,req.query.nonce))
         next();
     else
         res.send('Only approachable by Wechat.');

@@ -22,7 +22,11 @@ var run_times = 0;
 var time_1 = (new Date()).getTime();
 var time_2;
 
-handleSingleActivity();
+
+if (process.env.NODE_ENV != 'test') {
+    handleSingleActivity(moduleMsg.sendSuccessMessage, moduleMsg.sendFailMessage);
+}
+//handleSingleActivity();
 
 function getRandomString()
 {
@@ -48,7 +52,7 @@ function generateUniqueCode(prefix,actKey)
 }
 
 exports.handleSingleActivity = handleSingleActivity;
-function handleSingleActivity() {
+function handleSingleActivity(ifSucc, ifFail) {
 	run_times++;
 
     if (req_cache.length === 0) {
@@ -59,11 +63,16 @@ function handleSingleActivity() {
                 //console.log('stu_cache: {}');
                 //300000 in use;1000 in test
                 time_2 = (new Date()).getTime();
-                setTimeout(handleSingleActivity, 5000);
+                //console.log("time: " + (time_2 - time_1));
+                //setTimeout(handleSingleActivity, 1000);
+				
+	if (process.env.NODE_ENV != 'test') {
+		setTimeout(function(){handleSingleActivity(ifSucc, ifFail)}, 5000);
+	}
                 return -1;
             }
             req_cache = docs;
-            handleSingleActivity();
+            handleSingleActivity(ifSucc, ifFail);
         });
     } else {
         var req = req_cache[req_cache.length-1];
@@ -80,6 +89,7 @@ function handleSingleActivity() {
         db[ACTIVITY_DB].find({key:name}, function(err2, docs2){
             if (err2 || docs2.length==0) {
                 //no activity
+				handleSingleActivity(ifSucc, ifFail);
                 return -1;
             }
             if (tik_cache[name] == null){
@@ -100,13 +110,13 @@ function handleSingleActivity() {
             if (req.type == 1){//退票成功
                 remain_tickets += 1;
                 db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
-                handleSingleActivity();
+				handleSingleActivity(ifSucc, ifFail);
                 return;
             }
             
             var openid = req.weixin_id;
-            distributeTicket(openid, docs2[0], remain_tickets, function() {
-            	handleSingleActivity();
+            distributeTicket(openid, docs2[0], remain_tickets, ifSucc, ifFail, function() {
+                handleSingleActivity(ifSucc, ifFail);
             });
         });
     }
@@ -119,16 +129,16 @@ function handleSingleActivity() {
 // 2 : already get ticket
 // 3 : db errors
 // 4 : no more ticket
-function distributeTicket(openid, staticACT, remain_tickets, callback){
+function distributeTicket(openid, staticACT, remain_tickets, ifSucc, ifFail, callback){
     var name = staticACT.key;
     db[USER_DB].find({weixin_id:openid, status:1}, function(err3, docs3){
         if (err3){
-            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT, callback);
+            at.getAccessTokenValue(ifFail, openid, {errcode : 3}, staticACT, callback);
         }else if(docs3.length == 0){
             if(stu_cache[name].tikMap[openid] != true)
             {
                 stu_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 1}, staticACT, callback);
+                at.getAccessTokenValue(ifFail, openid, {errcode : 1}, staticACT, callback);
             }
             else{
             	callback();
@@ -137,7 +147,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
             if(stu_cache[name].tikMap[openid] != true)
             {
                 stu_cache[name].tikMap[openid] = true;
-                at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : -docs3[0].punish}, staticACT, callback);
+                at.getAccessTokenValue(ifFail, openid, {errcode : -docs3[0].punish}, staticACT, callback);
             }
             else{
             	callback();
@@ -145,7 +155,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
         }else{
             db[TICKET_DB].find({stu_id:docs3[0].stu_id, activity:staticACT._id, status:1}, function(err4, docs4){
                 if (err4){
-                    at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 3}, staticACT, callback);
+                    at.getAccessTokenValue(ifFail, openid, {errcode : 3}, staticACT, callback);
                 }else if (docs4.length == 0){
             		if (remain_tickets > 0){
                         remain_tickets--;
@@ -168,7 +178,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     		                    seat:       "",
     		                    cost:       price
     		                }, function(err101, count) {
-            					at.getAccessTokenValue(moduleMsg.sendSuccessMessage, openid, tiCode, staticACT, callback);
+            					at.getAccessTokenValue(ifSucc, openid, tiCode, staticACT, callback);
             				});
                         });
                     }
@@ -177,7 +187,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
                         if(stu_cache[name].tikMap[openid] != true)
                         {
                             stu_cache[name].tikMap[openid] = true;
-				            at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 4}, staticACT, callback);
+				            at.getAccessTokenValue(ifFail, openid, {errcode : 4}, staticACT, callback);
                         }
 						else{
 							callback();
@@ -187,7 +197,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
                     if(stu_cache[name].tikMap[openid] != true)
                     {
                     	stu_cache[name].tikMap[openid] = true;
-                        at.getAccessTokenValue(moduleMsg.sendFailMessage, openid, {errcode : 2, ticketid : docs4[0].unique_id}, staticACT, callback);
+                        at.getAccessTokenValue(ifFail, openid, {errcode : 2, ticketid : docs4[0].unique_id}, staticACT, callback);
                     }
 				    else{
 				    	callback();
