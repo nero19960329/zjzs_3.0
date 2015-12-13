@@ -4,7 +4,7 @@ var Resizer = $(
 	'<img>' +
 	'<div class="div-frames_container"><div class="div-frames"></div></div>' +
 	'</div>' +
-	'<button class="btn-resizer_ok" type="button">&#10003;</button>' +
+	'<button class="btn btn-default" id="btn-resizer_ok" type="button" style="display: none; margin-top: 10px;">裁剪</button>' +
 	'</div>'
 );
 
@@ -17,7 +17,7 @@ $.imageResizer = function() {
 	var resizer = Resizer.clone();
 	resizer.image = resizer.find('img')[0];
 	resizer.frames = resizer.find('.div-frames');
-	resizer.okButton = resizer.find('.btn-resizer_ok');
+	resizer.okButton = resizer.find('#btn-resizer_ok');
 	resizer.frames.offset = {
 		top: 0,
 		left: 0
@@ -75,9 +75,11 @@ $.imageResizer = function() {
 			ia[i] = src.charCodeAt(i);
 		}
 
+		debugger;
 		this.doneCallback(new Blob([ia], {
 			type: "image/jpeg"
 		}));
+		this.okButton.css('display', 'none');
 	};
 
 	resizer.resize = function(file, done) {
@@ -229,7 +231,7 @@ $.imageResizer = function() {
 					x: x,
 					y: y
 				};
-			};
+			}
 
 			var offset = {
 				x: x-lastPoint.x,
@@ -251,6 +253,9 @@ $.imageResizer = function() {
             if(!lastPoint) return;
             var offset = getOffset(event);
             resizer.moveFrames(offset);
+        });
+        $(window).mouseup(function(event) {
+        	lastPoint = null;
         });
         resizer.frames.on('touchend mouseup', function(event) {
             lastPoint = null;
