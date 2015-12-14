@@ -80,6 +80,7 @@ $.imageResizer = function() {
 			type: "image/jpeg"
 		}));
 		this.okButton.css('display', 'none');
+		$('#uploadBtn').attr('disabled', false);
 	};
 
 	resizer.resize = function(file, done) {

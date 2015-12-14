@@ -933,7 +933,7 @@ function newSeatModule() {
                     activity.seat_module = data.seat_maps;
 
 					var length = activity.seat_module.length;
-                    activity.seat_map = activity.seat_module[length - 1].seat_map;
+                    copySeatMap(activity, activity.seat_module[length - 1]);
                     seatModule.val(length - 1);
                     RenderMap();
                 }
@@ -966,7 +966,7 @@ function deleteSeatModule() {
             showSeatModuleNames(data.seat_maps);
             activity.seat_module = data.seat_maps;
             $('#input-modify_module').attr("disabled", true);
-            activity.seat_map = activity.seat_module[0].seat_map;
+            copySeatMap(activity, activity.seat_module[0]);
             RenderMap();
         },
         error: function(xhr) {
@@ -998,7 +998,6 @@ function seatModuleChange() {
     } else {
         $('#input-modify_module').attr("disabled", false);
     }
-
     var length = activity.seat_module.length;
     for (var i = 0; i < length; ++i) {
         if (name === activity.seat_module[i].name) {

@@ -12,6 +12,7 @@ $(document).ready(function()
 	$('#upfile').change(function(event) {
         if (this.files.length != 0) {
             resizer.okButton.css('display', 'block');
+            $('#uploadBtn').attr('disabled', true);
         } else {
             resizer.okButton.css('display', 'none');
         }
