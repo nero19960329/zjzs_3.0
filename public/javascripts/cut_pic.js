@@ -57,8 +57,7 @@ $.imageResizer = function() {
 		var h = this.frames.offset.size * scale;
 		ctx.drawImage(this.image, x, y, w, h, 0, 0, size*2, size);
 
-		var src = canvas.toDataURL();
-		debugger;
+		var src = canvas.toDataURL("image/jpeg");
 		this.canvas = canvas;
 		this.append(canvas);
 		this.addClass('uploading');
@@ -75,12 +74,10 @@ $.imageResizer = function() {
 			ia[i] = src.charCodeAt(i);
 		}
 
-		debugger;
 		this.doneCallback(new Blob([ia], {
 			type: "image/jpeg"
 		}));
 		this.okButton.css('display', 'none');
-		$('#uploadBtn').attr('disabled', false);
 	};
 
 	resizer.resize = function(file, done) {
@@ -99,7 +96,7 @@ $.imageResizer = function() {
 			resizer.addClass('have-img');
 
 			// 不设置异步就会导致modifyImgSize方法中获得的naturalWidth以及naturalHeight可能为0
-			// 为避免此玄学的结果，采用更加无脑的方式解决，即等一会儿..
+			// 为避免此玄学的结果，采用更加无脑的方式解决，也就是过一会儿执行
 			// 后人可专心研究一下，用一个漂亮的方法fix掉这个问题
 			setTimeout(function() {
 				modifyImgSize(resizer);
@@ -125,10 +122,8 @@ $.imageResizer = function() {
 	};
 
 	resizer.getDefaultSize = function() {
-		//var width = this.find(".div-inner").width();
-		//var height = this.find(".div-inner").height();
 		var width = this.image.width;
-		var height = this.height.height;
+		var height = this.image.height;
 		this.offset = {
 			width: width,
 			height: height
@@ -147,8 +142,6 @@ $.imageResizer = function() {
 		var top = this.frames.offset.top;
 		var left = this.frames.offset.left;
 		var size = this.frames.offset.size;
-		//var width = this.offset.width;
-		//var height = this.offset.height;
 		var width = this.image.width;
 		var height = this.image.height;
 

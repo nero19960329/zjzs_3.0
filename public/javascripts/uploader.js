@@ -12,7 +12,6 @@ $(document).ready(function()
 	$('#upfile').change(function(event) {
         if (this.files.length != 0) {
             resizer.okButton.css('display', 'block');
-            $('#uploadBtn').attr('disabled', true);
         } else {
             resizer.okButton.css('display', 'none');
         }
@@ -22,11 +21,18 @@ $(document).ready(function()
 		});
 	});
     $('#fileUploader').submit(function() {
+		if (resizer.okButton.css('display') != 'none') {
+			setPopOver($('#uploadBtn'), "请您先裁剪图片");
+			return false;
+		} else {
+			$('#uploadBtn').popover('destroy');
+		}
+
         var options = {
             dataType: 'json',
 			beforeSubmit: function(formData, jqForm, options) {
 				formData.push({
-                    name: 'blob', 
+                    name: 'blob',
                     required: false,
                     value: resizedImage
                 });
