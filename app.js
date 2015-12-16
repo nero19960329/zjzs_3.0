@@ -18,6 +18,7 @@ var chooseat = require('./routes/choose_seat');
 var chooarea = require('./routes/choose_area');
 var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
+var preview = require('./routes/preview');
 var configure = require('./configure');
 var guardProcess = require('./guard_process.js');
 
@@ -64,6 +65,7 @@ app.use('/login', login);
 app.use('/validate', validate);
 app.use('/logout', logout);
 app.use('/acquireid', acquireid);
+app.use('/preview', preview);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

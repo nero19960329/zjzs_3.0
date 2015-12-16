@@ -33,7 +33,7 @@ function add_to_html()
     $('#get_ticket_method_content').append(get_ticket_method_content);
     //var seat_type=["不选座","分区选座","选座"];
     //$('#activity_seat_type').append(seat_type[activity_seat_type]);
-    
+
     for (var i in activity_extra_info)
     {
       $('#activity_extra_info').append(
@@ -46,10 +46,10 @@ function add_to_html()
     $('#get_ticket_method_title').append('<b>'+get_ticket_method_title+'</b>');
     $('#activity_main_image').attr("src",activity_main_image);
     $('#activity_title_image').css("background","url("+activity_title_image+") repeat")
-    
+
     $('#activity_ticket_status').append(activity_place);//ticket_status[activity_ticket_status]);
-    
-    
+
+
     if (activity_content.length<300)
     {
         $("#get_ticket_2").css('display','none');
@@ -86,24 +86,6 @@ function add_to_html()
                     ((activity_ticket_status?'距抢票结束还有:<br>':'抢票倒计时:<br>')+'　　'+(show_time(time_left)));
         },100);
     }
-
-
-    if (isManager === "true")
-    {
-        $("body").css({
-            "font-size": "0.4em",
-            "width": "360px"
-        });
-        $("activity_content").css({
-            "width": "330px",
-        });
-        $(".auto_hide").css("width", "360px");
-    }
-
-    // 使活动介绍部分充满屏幕，针对
-    //if ($("#robot").height() <= 540) {
-        $("#robot").css("height", $(document).height() + "px");
-    //}
 }
 
 add_to_html();

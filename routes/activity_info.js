@@ -2,11 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 var model = require('../models/models');
-var lock = require('../models/lock');
-var urls = require("../address_configure");
 
 var ACTIVITY_DB = model.activities;
-var ADMIN_DB = model.admins;
 var db = model.db;
 
 function addZero(num)
@@ -37,68 +34,49 @@ router.get("/", function(req, res, next)
     //WARNING: 500 when invalid id
     var theActID=model.getIDClass(req.query.actid);
 
-    var conditionObj = {
-        _id: theActID
-    };
-
-    //判断是否是管理员
-    db[ADMIN_DB].find({user:req.session.user,manager:true},function(err,docs)
-    {
-        if (err) {
-            res.render("activity_detail_user", tmp);
+    db[ACTIVITY_DB].find({
+        _id: theActID,
+        status: {$gt: 0}
+    }, function(err, docs) {
+        if (err || docs.length==0)
+        {
+            res.send("Activity not exist!");
             return;
         }
-
-        var isManager = false;
-        if (docs.length === 0) {
-            conditionObj.status = {$gt: 0};
-        } else {
-            isManager = true;
-        }
-
-        db[ACTIVITY_DB].find(conditionObj, function(err, docs)
+        var theAct=docs[0];
+        var nowStatus=0;
+        var current=(new Date()).getTime();
+        if (current>theAct.book_start && current<theAct.book_end)
+            nowStatus=1;
+        else if (current>=theAct.book_end)
+            nowStatus=2;
+        var tmp=
         {
-            if (err || docs.length==0)
-            {
-                res.send("Activity not exist!");
-                return;
-            }
-            var theAct=docs[0];
-            var nowStatus=0;
-            var current=(new Date()).getTime();
-            if (current>theAct.book_start && current<theAct.book_end)
-                nowStatus=1;
-            else if (current>=theAct.book_end)
-                nowStatus=2;
-            var tmp=
-            {
-                act_name:           theAct.name,
-                act_book_start:     theAct.book_start,
-                act_book_end:       theAct.book_end,
-                act_start:          theAct.start_time,
-                act_end:            theAct.end_time,
-                act_place:          theAct.place,
-                act_key:            theAct.key,
-                act_pic_url:        theAct.pic_url,
-                act_desc:           theAct.description
-                                        .replace(/ /g,"&nbsp;")
-                                        .replace(/"/g,"&quot;")
-                                        .replace(/</g,"&lt;")
-                                        .replace(/>/g,"&gt;")
-                                        .replace(/\\n/g,"<br>"),
-                seat_type:          theAct.need_seat,
+            act_name:           theAct.name,
+            act_book_start:     theAct.book_start,
+            act_book_end:       theAct.book_end,
+            act_start:          theAct.start_time,
+            act_end:            theAct.end_time,
+            act_place:          theAct.place,
+            act_key:            theAct.key,
+            act_pic_url:        theAct.pic_url,
+            act_desc:           theAct.description
+                                    .replace(/ /g,"&nbsp;")
+                                    .replace(/"/g,"&quot;")
+                                    .replace(/</g,"&lt;")
+                                    .replace(/>/g,"&gt;")
+                                    .replace(/\\n/g,"<br>"),
+            seat_type:          theAct.need_seat,
 
-                cur_time:           getTime(new Date(),true),
-                rem_tik:            theAct.remain_tickets,
+            cur_time:           getTime(new Date(),true),
+            rem_tik:            theAct.remain_tickets,
 
-                time_rem:           Math.round((theAct.book_start-current)/1000),
-                ticket_status:      nowStatus,
-                current_time:       (new Date()).getTime(),
-                isManager:          isManager
-            };
+            time_rem:           Math.round((theAct.book_start-current)/1000),
+            ticket_status:      nowStatus,
+            current_time:       (new Date()).getTime(),
+        };
 
-            res.render("activity_detail_user", tmp);
-        });
+        res.render("activity_detail_user", tmp);
     });
 });
 
