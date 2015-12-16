@@ -29,7 +29,7 @@
   <footer>
     <div class="container">
       <h3>抢票方式</h3>
-      <p><span id="book-time"></span> 线上抢票，数量有限,先到先得！</p>
+      <p id="act-status"><span id="book-time"></span> 线上抢票，数量有限,先到先得！</p>
       <ul>
         <li>在微信中直接回复<b>抢票 活动名</b>即可</li>
         <li>或者点击菜单中的抢票</li>
@@ -44,9 +44,13 @@
   <script>
     $(function() {
       $('#act-time').text(combine_time(Number(<%= act_start %>), Number(<%= act_end %>)));
-      $('#book-time').text(combine_time(Number(<%= act_book_start %>), Number(<%= act_book_end %>)));
+      $('#title').css('background-image', 'url(<%= act_pic_url %>)');
 
-      $('#title').css('background-image', 'url(<%= act_pic_url %>)')
+      if (Number(<%= ticket_status %>) === 2) {
+        $('#act-status').text('活动已结束');
+      } else {
+        $('#book-time').text(combine_time(Number(<%= act_book_start %>), Number(<%= act_book_end %>)));
+      }
 
       var last_st = 0;
       var $footer = $('footer');
