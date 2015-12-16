@@ -22,10 +22,11 @@ $(document).ready(function()
 	});
     $('#fileUploader').submit(function() {
 		if (resizer.okButton.css('display') != 'none') {
-			setPopOver($('#uploadBtn'), "请您先裁剪图片");
+			setPopOver(resizer.okButton, "请您先裁剪图片");
+			setTimeout(function() {
+				resizer.okButton.popover('destroy');
+			}, 1000);
 			return false;
-		} else {
-			$('#uploadBtn').popover('destroy');
 		}
 
         var options = {
