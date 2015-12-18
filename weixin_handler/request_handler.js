@@ -50,7 +50,6 @@ function generateUniqueCode(prefix,actKey)
 exports.handleSingleActivity = handleSingleActivity;
 function handleSingleActivity() {
 	run_times++;
-
     if (req_cache.length === 0) {
         db[REQUEST_DB].find({}, {sort:{time:-1}}, function(err, docs) {
             if (err || docs.length == 0) {
