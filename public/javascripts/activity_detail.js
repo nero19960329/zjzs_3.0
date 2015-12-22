@@ -1009,7 +1009,6 @@ function seatModuleChange() {
 }
 
 function displayOption(str) {
-	debugger;
 	if (str === undefined) {
 		$('#input-seat_module').val(0);
 		return;

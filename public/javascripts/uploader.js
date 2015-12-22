@@ -65,13 +65,6 @@ function showUploader()
 }
 
 function beforeSubmitResized(formData, jqForm, options) {
-	/*formData.push({
-		name: 'image',
-		required: false,
-		type: 'file',
-		value: resizedImage
-	});*/
-	debugger;
 	formData.append('file', resizedFile);
 }
 
