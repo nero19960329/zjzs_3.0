@@ -137,7 +137,8 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
 		path: '/cgi-bin/message/template/send?access_token='+access_token,
 		method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': tsuccessData.length
         }
     };
 
@@ -191,7 +192,8 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT, cal
         path: '/cgi-bin/message/template/send?access_token='+access_token,
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': tfailData.length
         }
     };
 
