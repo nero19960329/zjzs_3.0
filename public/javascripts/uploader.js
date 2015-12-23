@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-	var resizer = $.imageResizer();
+	var resizer = $.imageResizer(5/3.4);
 	var resizedImage;
 	if (!resizer) {
 		resizer = $(

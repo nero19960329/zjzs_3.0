@@ -20,12 +20,11 @@ html, body {
   height: 100%;
   width: 100%;
   margin: 0;
-  background: rgb(60, 60, 60);
+  background: rgb(40, 40, 40);
 }
 
 #title {
-  margin-top: 5%;
-  height: 35%;
+  height: 43%;
   width: 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -39,12 +38,12 @@ html, body {
 }
 
 #title .space {
-  height: 60%;
+  height: 65%;
   width: 100%;
 }
 
-#title h1 {
-  height: 40%;
+#title h2 {
+  height: 35%;
   width: 90%;
   padding-left: 5%;
   padding-right: 5%;
@@ -55,11 +54,11 @@ html, body {
 
 main {
   width: 90%;
-  height: 60%;
+  height: 57%;
   padding-left: 5%;
   padding-right: 5%;
   padding-top: 10px;
-  font-size: 1.2em;
+  font-size: 1em;
   overflow-y: scroll;
 }
 
@@ -75,5 +74,5 @@ footer {
 
   background-color: rgb(252, 228, 51);
 
-  box-shadow: 0 -20px 5px rgba(60, 60, 60, 0.8), 0 20px 5px rgb(60, 60, 60);
+  box-shadow: 0 -20px 5px rgba(40, 40, 40, 0.8), 0 20px 5px rgb(40, 40, 40);
 }

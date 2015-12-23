@@ -8,7 +8,7 @@ var Resizer = $(
 	'</div>'
 );
 
-$.imageResizer = function() {
+$.imageResizer = function(ratio) {
 	// 如果不支持以下组件，返回false
 	if (!Uint8Array && HTMLCanvasElement && atob && Blob) {
 		return false;
@@ -35,10 +35,10 @@ $.imageResizer = function() {
 		var naturalWidth = this.image.naturalWidth;
 		var size;
 
-		if (naturalHeight * 2 < naturalWidth) {
+		if (naturalHeight * ratio < naturalWidth) {
 			size = naturalHeight;
 		} else {
-			size = naturalWidth / 2;
+			size = naturalWidth / ratio;
 		}
 
 		if (size > 200) {
@@ -46,16 +46,18 @@ $.imageResizer = function() {
 		}
 
 		var canvas = $(
-			'<canvas width="' + (size * 2) + '" ' +
+			'<canvas width="' + (size * ratio) + '" ' +
 			'height="' + size + '"></canvas>'
 		)[0];
 		var ctx = canvas.getContext('2d');
 		var scale = naturalWidth / this.offset.width;
 		var x = this.frames.offset.left * scale;
 		var y = this.frames.offset.top * scale;
-		var w = this.frames.offset.size * 2 * scale;
-		var h = this.frames.offset.size * scale;
-		ctx.drawImage(this.image, x, y, w, h, 0, 0, size*2, size);
+		var w = parseInt(this.frames.offset.size * ratio * scale);
+		var h = parseInt(this.frames.offset.size * scale);
+		console.log(naturalWidth + ', ' + naturalHeight);
+		console.log(x + ', ' + y + ', ' + w + ', ' + h + ', ' + size*ratio + ', ' + size + ', ' + ratio);
+		ctx.drawImage(this.image, x, y, w, h, 0, 0, size*ratio, size);
 
 		var src = canvas.toDataURL("image/jpeg");
 		this.canvas = canvas;
@@ -116,7 +118,7 @@ $.imageResizer = function() {
 	resizer.setFrameSize = function(size) {
 		this.frames.offset.size = size;
 		return this.frames.css({
-			width: size*2 + 'px',
+			width: size*ratio + 'px',
 			height: size + 'px'
 		});
 	};
@@ -129,10 +131,10 @@ $.imageResizer = function() {
 			height: height
 		};
 
-		if (width > height*2) {
+		if (width > height*ratio) {
 			return height;
 		} else {
-			return width/2;
+			return width/ratio;
 		}
 	};
 
@@ -145,8 +147,8 @@ $.imageResizer = function() {
 		var width = this.image.width;
 		var height = this.image.height;
 
-		if (x+size*2+left > width) {
-			x = width-size*2;
+		if (x+size*ratio+left > width) {
+			x = width-size*ratio;
 		} else {
 			x += left;
 		}
