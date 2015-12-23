@@ -7,8 +7,6 @@ var act_infoer = require("../weixin_basic/activity_info");
 var checker = require("./checkRequest");
 var basicInfo = require("../weixin_basic/settings.js");
 
-var handleRequest = require("../routes/handleRequest.js");
-
 //Attentez: keep the activity::key unique globally.
 var TICKET_DB = model.tickets;
 var USER_DB = model.students;
@@ -114,7 +112,6 @@ exports.faire_bookable_activity=function(msg,res)
             tmpEle[template.rich_attr.picture]=docs[i].pic_url;
             showList.push(tmpEle);
         }
-        //handleRequest.handleSingleActivity("rp不洗澡4");
         res.send(template.getRichTextTemplate(msg,showList));
     });
 }
