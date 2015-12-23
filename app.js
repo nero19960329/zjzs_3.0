@@ -30,7 +30,7 @@ var db = model.db;
 
 db[TOKEN_DB].remove({});
 
-exec('node ./weixin_handler/request_handler.js', function() {return;});
+//exec('node ./weixin_handler/request_handler.js', function() {return;});
 
 process.on('uncaughtException', function(err)
 {

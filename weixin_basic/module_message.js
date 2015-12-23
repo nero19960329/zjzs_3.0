@@ -195,7 +195,7 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT, cal
         }
     };
 
-    console.log(sendFailMessage);
+    console.log("sendFailMessage");
     var req = http.request(opt, function (res) {
         res.setEncoding('utf8');
         res.on('data', function (data) {
