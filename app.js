@@ -20,7 +20,6 @@ var logout = require('./routes/logout');
 var acquireid = require('./routes/acquireid');
 var preview = require('./routes/preview');
 var configure = require('./configure');
-var guardProcess = require('./guard_process.js');
 
 var app = express();
 
@@ -31,7 +30,6 @@ var db = model.db;
 
 db[TOKEN_DB].remove({});
 
-//guardProcess.startRequestHandler();
 exec('node ./weixin_handler/request_handler.js', function() {return;});
 
 process.on('uncaughtException', function(err)
@@ -92,15 +90,7 @@ if (app.get('env') === 'development') {
             error: err
         });
     });
-} /*else if (app.get('env') === 'release') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: 'Error',
-            error: {}
-        });
-    });
-}*/
+}
 
 // production error handler
 // no stacktraces leaked to user

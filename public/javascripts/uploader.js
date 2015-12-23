@@ -92,7 +92,6 @@ function errorRes(data)
 
 function successRes(data)
 {
-    debugger;
     if (data.responseText=="Nothing")
     {
         errorRes();

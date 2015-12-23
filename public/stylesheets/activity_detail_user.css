@@ -1,6 +1,6 @@
 p {
-  margin-bottom: 6px;
-  margin-top: 6px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 .text-white {
@@ -75,4 +75,19 @@ footer {
   background-color: rgb(252, 228, 51);
 
   box-shadow: 0 -20px 5px rgba(40, 40, 40, 0.8), 0 20px 5px rgb(40, 40, 40);
+}
+
+footer h3 {
+    margin-bottom: 0;
+    margin-top: 2px;
+}
+
+footer p {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+footer ul {
+    margin-bottom: 0;
+    margin-top: 0;
 }
