@@ -21,20 +21,23 @@ html, body {
   width: 100%;
   margin: 0;
   background: rgb(40, 40, 40);
-  overflow-y: scroll;
+  /*overflow-y: scroll;*/
 }
 
 #title {
+  position: fixed;
   height: 43%;
   width: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  z-index: 101;
 }
 
 @media all and (orientation: landscape) {
   #title {
     background-size: auto;
+    position: fixed;
   }
 }
 
@@ -56,12 +59,16 @@ html, body {
 }
 
 main {
+  position: absolute;
   width: 90%;
   height: 57%;
   padding-left: 5%;
   padding-right: 5%;
   padding-top: 10px;
   font-size: 0.9em;
+
+  top: 43%;
+  z-index: 100;
 }
 
 #desc {
@@ -69,7 +76,7 @@ main {
 }
 
 footer {
-  position: absolute;
+  position: fixed;
   left: 5%;
   top: 78.5%;
   height: 21.5%;
@@ -81,6 +88,8 @@ footer {
   background-color: rgb(252, 228, 51);
 
   box-shadow: 0 -20px 5px rgba(40, 40, 40, 0.8), 0 20px 5px rgb(40, 40, 40);
+
+  z-index: 101;
 }
 
 footer h3 {
