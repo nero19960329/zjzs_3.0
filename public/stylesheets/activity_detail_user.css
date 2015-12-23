@@ -21,6 +21,7 @@ html, body {
   width: 100%;
   margin: 0;
   background: rgb(40, 40, 40);
+  overflow-y: scroll;
 }
 
 #title {
@@ -48,6 +49,8 @@ html, body {
   padding-left: 5%;
   padding-right: 5%;
 
+  float: left;
+
   background: rgba(40, 40, 40, 0.7);
   box-shadow: 0 -5px 5px rgba(40, 40, 40, 0.7);
 }
@@ -59,7 +62,6 @@ main {
   padding-right: 5%;
   padding-top: 10px;
   font-size: 0.9em;
-  overflow-y: scroll;
 }
 
 #desc {
