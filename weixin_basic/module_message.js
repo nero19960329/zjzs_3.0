@@ -141,10 +141,11 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
         }
     };
 
+    console.log("sendSuccessMessage");
     var req = http.request(opt, function (res) {
         res.on('data', function (data) {
         	//process.stdout.write(data);
-        	//console.log(tsuccessData);
+        	console.log(tsuccessData);
         }).on('error', function (e) {
         	console.log(e);
         });
@@ -194,11 +195,12 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT, cal
         }
     };
 
+    console.log(sendFailMessage);
     var req = http.request(opt, function (res) {
         res.setEncoding('utf8');
         res.on('data', function (data) {
             //process.stdout.write(data);
-            //console.log(tfailData);
+            console.log(tfailData);
             //console.log(data);
         }).on('error', function (e) {
         	console.log(e);
