@@ -137,8 +137,7 @@ exports.sendSuccessMessage = function (access_token, openid, ticketid, staticACT
 		path: '/cgi-bin/message/template/send?access_token='+access_token,
 		method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': tsuccessData.length
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
 
@@ -192,18 +191,17 @@ exports.sendFailMessage = function (access_token, openid, reason, staticACT, cal
         path: '/cgi-bin/message/template/send?access_token='+access_token,
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': tfailData.length
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
 
     console.log("sendFailMessage");
     var req = http.request(opt, function (res) {
-        res.setEncoding('utf8');
+        //res.setEncoding('utf8');
         res.on('data', function (data) {
             //process.stdout.write(data);
-            console.log(tfailData);
-            //console.log(data);
+            //console.log(tfailData);
+            console.log(data);
         }).on('error', function (e) {
         	console.log(e);
         });
