@@ -68,6 +68,7 @@ main {
   padding-right: 5%;
   padding-top: 10px;
   font-size: 0.9em;
+  overflow: auto;
 
   top: 43%;
   z-index: 100;
@@ -80,7 +81,7 @@ main {
 footer {
   position: fixed;
   left: 5%;
-  top: 78.5%;
+  bottom: 0px;
   height: 21.5%;
   width: 90%;
   overflow-y: scroll;

@@ -46,6 +46,7 @@
   <script src="/js/activity_detail_time.js"></script>
 
   <script>
+
     $(function() {
       $('#act-time').text(combine_time(Number(<%= act_start %>), Number(<%= act_end %>)));
       $('#title').css('background-image', 'url(' + '<%= act_pic_url %>'.substr('<%= act_pic_url %>'.indexOf('/uploadpics')) + ')');
@@ -72,13 +73,14 @@
         var st = e.originalEvent.touches[0].pageY;
 
         if (st > last_st + 2) {
-          $footer.show('slide', { direction: 'down' }, 100);
+          $footer.show('slide', { direction: 'down' }, 500);
         } else if (st < last_st - 2) {
-          $footer.hide('slide', { direction: 'down' }, 100);
+          $footer.hide('slide', { direction: 'down' }, 500);
         }
 
         last_st = st;
       });
+      
     });
   </script>
 </body>
