@@ -22,13 +22,12 @@
 
   <main class="scroll">
     <p class="content">
-      <span class="text-yellow">时间：</span>
-      <span class="text-white" id="act-time"></span>
+      <span class="text-yellow">时间：</span><span class="text-white" id="act-time"></span>
     </p>
 
     <p class="content"><span class="text-yellow">地点：</span><span class="text-white"><%= act_place %></span></p>
 
-    <p class="content"><span class="text-yellow">简介：</span><span id="desc" class="text-white"><%= act_desc %></span></p>
+    <p class="content"><span class="text-yellow">简介：</span><span id="desc" class="text-white"><%- act_desc %></span></p>
   </main>
 
   <footer>
@@ -73,9 +72,9 @@
         var st = e.originalEvent.touches[0].pageY;
 
         if (st > last_st + 2) {
-          $footer.show('slide', { direction: 'down' }, 500);
+          $footer.show('slide', { direction: 'down' }, 100);
         } else if (st < last_st - 2) {
-          $footer.hide('slide', { direction: 'down' }, 500);
+          $footer.hide('slide', { direction: 'down' }, 100);
         }
 
         last_st = st;
