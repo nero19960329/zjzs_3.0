@@ -141,25 +141,30 @@ exports.save_ticket_request = function(msg, res) {
     } else {
         act_name=msg.EventKey[0].substr(basicInfo.WEIXIN_BOOK_HEADER.length);
     }
-    
-    verifyActivities(act_name, function(tl) {
-    	if (tl == null){
-    		res.send(template.getPlainTextTemplate(msg, "目前没有符合要求的活动处于抢票期。"));
-    	} else {
-    		res.send(template.getPlainTextTemplate(msg, "该活动将在 " + getTimeFormat(tl) + " 后开始抢票，请耐心等待！"));
-    	}
-    }, function(actID, staticACT) { // 可以对verifyActivities进行代码优化
-		weixin_id = msg.FromUserName[0];
-		current_time = (new Date()).getTime();
-		
-		db[REQUEST_DB].insert({
-		    weixin_id : weixin_id,
-		    act_name : act_name,
-		    time : current_time,
-		    type: 0		// 0代表抢票，1代表退票成功
-		}, function(err, result) {
-		    res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，稍后会通知抢票结果，请届时查看(/▽＼)"));
-		});
+
+    weixin_id = msg.FromUserName[0];
+    verifyStudent(weixin_id, function() {
+        //WARNING: may change to direct user to bind
+        res.send(needValidateMsg(msg));
+    }, function() {
+        verifyActivities(act_name, function(tl) {
+        	if (tl == null){
+        		res.send(template.getPlainTextTemplate(msg, "目前没有符合要求的活动处于抢票期。"));
+        	} else {
+        		res.send(template.getPlainTextTemplate(msg, "该活动将在 " + getTimeFormat(tl) + " 后开始抢票，请耐心等待！"));
+        	}
+        }, function(actID, staticACT) { // 可以对verifyActivities进行代码优化
+    		current_time = (new Date()).getTime();
+
+    		db[REQUEST_DB].insert({
+    		    weixin_id : weixin_id,
+    		    act_name : act_name,
+    		    time : current_time,
+    		    type: 0		// 0代表抢票，1代表退票成功
+    		}, function(err, result) {
+    		    res.send(template.getPlainTextTemplate(msg,"您的抢票请求正在处理中，稍后会通知抢票结果，请届时查看(/▽＼)"));
+    		});
+        });
     });
 }
 //========================================
@@ -220,7 +225,7 @@ exports.faire_reinburse_ticket=function(msg,res)
                         //Nothing? Oui, ne rien.
                     });
                 }
-                    
+
             	var current_time = (new Date()).getTime();
            		db[REQUEST_DB].insert({
 				weixin_id : stuID,

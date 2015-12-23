@@ -48,6 +48,7 @@ function generateUniqueCode(prefix,actKey)
 }
 
 exports.handleSingleActivity = handleSingleActivity;
+
 function handleSingleActivity() {
 	run_times++;
     if (req_cache.length === 0) {
@@ -55,8 +56,6 @@ function handleSingleActivity() {
             if (err || docs.length == 0) {
                 //nobody want this activity
                 stu_cache = {};
-                //console.log('stu_cache: {}');
-                //300000 in use;1000 in test
                 time_2 = (new Date()).getTime();
                 setTimeout(handleSingleActivity, 5000);
                 return -1;
@@ -67,9 +66,8 @@ function handleSingleActivity() {
     } else {
         var req = req_cache[req_cache.length-1];
         --req_cache.length;
-        //console.log("req_cache.length: " + req_cache.length);
 		db[REQUEST_DB].remove({_id:req._id});
-        
+
         var remain_tickets = 0;
         var activityName = "";
         var activityTime = "";
@@ -89,20 +87,15 @@ function handleSingleActivity() {
             	stu_cache[name] = {};
             	stu_cache[name].tikMap = {};
             }
-            
-            //console.log('stu_cache: ');
-            //for (var attr in stu_cache[name].tikMap) {
-            //	console.log(attr + ': ' + stu_cache[name].tikMap[attr]);
-            //}
-            
+
             remain_tickets = docs2[0].remain_tickets;
-            if (req.type == 1){//退票成功
+            if (req.type == 1){ //退票成功
                 remain_tickets += 1;
                 db[ACTIVITY_DB].update({key:name}, {$set:{remain_tickets:remain_tickets}});
                 handleSingleActivity();
                 return;
             }
-            
+
             var openid = req.weixin_id;
             distributeTicket(openid, docs2[0], remain_tickets, function() {
             	handleSingleActivity();
@@ -157,7 +150,7 @@ function distributeTicket(openid, staticACT, remain_tickets, callback){
     		                if(staticACT.need_seat == 2){
     		                    price = parseInt(staticACT.price);
     		                }
-                            //console.log("stu_id: " + stuID);
+
     		                db[TICKET_DB].insert(
     		                {
     		                    stu_id:     stuID,
