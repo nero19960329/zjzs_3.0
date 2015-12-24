@@ -18,6 +18,7 @@ exports.seat_modules = seat_modules;
 exports.accesstoken = accesstoken;
 
 exports.db = mongojs('mongodb://localhost/ticket', [tickets, activities, students, admins, seats, requests, seat_modules, accesstoken]);
+//exports.db = mongojs('mongodb://localhost/softeng1', [tickets, activities, students, admins, seats, requests, seat_modules, accesstoken]);
 
 exports.getIDClass=function(idValue)
 {
