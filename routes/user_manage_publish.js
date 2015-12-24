@@ -7,9 +7,9 @@
 var express = require('express');
 var fs = require('fs');
 var wechat_api = require('wechat-api');
-var im = require('imagemagick');
 var path = require('path');
 var set = require('../weixin_basic/settings');
+var imagemin = require('image-min');
 var token = require('../weixin_basic/access_token');
 var model = require('../models/models');
 
@@ -79,26 +79,32 @@ function upload(act_ids, i, res, callback) {
 
     res.render('activity_detail_user_news', actinfo, function(err, html) {
       var file_path = path.join(__dirname.substring(0, __dirname.indexOf('route')), 'public', act_obj.pic_url.substr(act_obj.pic_url.indexOf('uploadpics')));
-      //var file_src = fs.createReadStream(file_path);
-      var ext = path.extname(file_path);
+      var file_src = fs.createReadStream(file_path);
+      var ext = '.jpg';
       var file_min_path = file_path.substring(0, file_path.lastIndexOf(ext)) + '.min' + ext;
 
-      var image = {
-        path: file_path
-      };
+      //var image = {
+      //  path: file_path
+      //};
 
-      im.crop({
-        srcPath: file_path,
-        dstPath: file_min_path,
-        width: 400,
-        height: 200,
-        quality: 0.5,
-        gravity: "North"
-      }, function(err) {
-        if (err || !fs.existsSync(file_min_path)) {
-          file_min_path = file_path;
-          console.error(err);
-        }
+      //im.crop({
+      //  srcPath: file_path,
+      //  dstPath: file_min_path,
+      //  width: 400,
+      //  height: 200,
+      //  quality: 0.5,
+      //  gravity: "North"
+      //}, function(err) {
+      //  if (err || !fs.existsSync(file_min_path)) {
+      //    file_min_path = file_path;
+      //    console.error(err);
+      //  }
+
+      file_src.pipe(imagemin({ ext: ext })).pipe(fs.createWriteStream(file_min_path));
+
+      if (!fs.existsSync(file_min_path)) {
+        file_min_path = file_path;
+      }
 
         api.uploadMedia(file_min_path, 'thumb', function(err, thumb_result) {
           if (err) {
@@ -119,7 +125,7 @@ function upload(act_ids, i, res, callback) {
         });
       });
     });
-  });
+  //});
 }
 
 router.get('/', function(req, res) {
