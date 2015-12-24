@@ -7,6 +7,8 @@ var router = express.Router();
 router.use(multer({
     dest: './public/uploadpics/',
     rename: function(fieldname, filename) {
+        console.log('fieldname:' + fieldname);
+        console.log('filename:' + filename);
         return filename + '.jpg';
     }
 }));
