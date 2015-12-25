@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var model = require('../models/models');
+var lock = require("../models/lock");
 var urls = require("../address_configure");
 
 var TICKET_DB = model.tickets;
